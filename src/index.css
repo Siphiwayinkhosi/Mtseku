@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mtseku Transport Design System - Blue, Orange, White Theme */
+
+@layer base {
+  :root {
+    /* Transport Blue Theme */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 15%;
+    
+    /* Transport Blue - Primary Brand Color */
+    --primary: 220 85% 25%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 220 75% 45%;
+    --primary-dark: 220 95% 15%;
+    
+    /* Transport Orange - Accent Color */
+    --accent: 25 95% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 25 85% 65%;
+    --accent-dark: 25 100% 45%;
+    
+    /* Secondary Colors */
+    --secondary: 220 25% 95%;
+    --secondary-foreground: 220 15% 25%;
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%;
+    
+    /* Card and Surface Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
+    
+    /* Interactive States */
+    --border: 220 25% 90%;
+    --input: 220 25% 90%;
+    --ring: 220 85% 25%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220, 85%, 25%) 0%, hsl(220, 75%, 45%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(25, 95%, 55%) 0%, hsl(25, 85%, 65%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(220, 85%, 25%) 0%, hsl(220, 75%, 35%) 50%, hsl(25, 95%, 55%) 100%);
+    --gradient-overlay: linear-gradient(135deg, hsl(220, 85%, 25% / 0.9) 0%, hsl(220, 75%, 35% / 0.8) 100%);
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 6px -1px hsl(220, 25%, 25% / 0.1), 0 2px 4px -1px hsl(220, 25%, 25% / 0.06);
+    --shadow-medium: 0 10px 15px -3px hsl(220, 25%, 25% / 0.1), 0 4px 6px -2px hsl(220, 25%, 25% / 0.05);
+    --shadow-large: 0 25px 50px -12px hsl(220, 25%, 25% / 0.25);
+    --shadow-primary: 0 10px 30px -10px hsl(220, 85%, 25% / 0.3);
+    --shadow-accent: 0 10px 30px -10px hsl(25, 95%, 55% / 0.3);
+    
+    /* Animation Timings */
+    --transition-fast: 0.15s ease-out;
+    --transition-medium: 0.3s ease-out;
+    --transition-slow: 0.6s ease-out;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 220 25% 8%;
+    --foreground: 0 0% 95%;
+    --primary: 220 75% 55%;
+    --primary-foreground: 220 25% 8%;
+    --secondary: 220 20% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 220 20% 12%;
+    --muted-foreground: 220 10% 65%;
+    --card: 220 25% 10%;
+    --card-foreground: 0 0% 95%;
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    scroll-behavior: smooth;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Hero Section Styles */
+  .hero-text {
+    @apply text-white font-display font-bold leading-tight;
+  }
+  
+  /* Button Variants */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-primary-light text-primary-foreground font-semibold px-8 py-4 rounded-xl shadow-primary hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent to-accent-light text-accent-foreground font-semibold px-8 py-4 rounded-xl shadow-accent hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-white text-white font-semibold px-8 py-4 rounded-xl hover:bg-white hover:text-primary transform hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  /* Card Styles */
+  .service-card {
+    @apply bg-card rounded-2xl p-8 shadow-soft hover:shadow-large transform hover:-translate-y-2 transition-all duration-500 border border-border/50;
+  }
+  
+  /* Animation Classes */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  
+  .fade-in-left {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  
+  .fade-in-right {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  
+  .scale-in {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  
+  /* Floating Animation */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  /* Navbar Underline Effect */
+  .nav-link {
+    @apply relative text-foreground hover:text-primary transition-colors duration-300;
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -8px;
+    left: 0;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+    transition: width 0.3s ease-out;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+  
+  /* WhatsApp Floating Button */
+  .whatsapp-float {
+    @apply fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-large hover:shadow-xl transform hover:scale-110 transition-all duration-300 z-50;
+  }
+  
+  /* Parallax Container */
+  .parallax-container {
+    transform-style: preserve-3d;
+  }
+}
