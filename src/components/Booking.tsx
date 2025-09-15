@@ -141,7 +141,7 @@ const Booking = () => {
               {/* FormSubmit hidden inputs */}
               <input type="hidden" name="_subject" value="New Booking Request - Mtseku Transport" />
               <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_next" value="https://yourdomain.com/thank-you" />
+              <input type="hidden" name="_next" value="https://mtseku.vercel.app/" />
 
               {/* Personal Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
