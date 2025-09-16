@@ -10,10 +10,20 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // prevent horizontal scroll & lock body when menu open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.documentElement.style.overflowX = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.documentElement.style.overflowX = "hidden";
+      document.body.style.overflow = "";
+    }
+  }, [isMobileMenuOpen]);
 
   const navItems = [
     { name: "Home", href: "#home" },
@@ -34,9 +44,7 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-lg shadow-md"
-          : "bg-transparent"
+        isScrolled ? "bg-white/95 backdrop-blur-lg shadow-md" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,7 +56,7 @@ const Navbar = () => {
                 isScrolled ? "text-primary" : "text-white"
               }`}
             >
-              Mtseku Transport Services 
+              Mtseku Transport Services
             </h1>
           </div>
 
@@ -86,15 +94,11 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden z-50">
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 rounded-md transition-colors duration-300 ${
-                isScrolled
-                  ? "text-foreground hover:text-primary"
-                  : "text-white hover:text-accent"
-              }`}
+              className="p-2 rounded-md bg-black/60 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-accent"
             >
               {isMobileMenuOpen ? (
                 <motion.div
@@ -170,3 +174,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
