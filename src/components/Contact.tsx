@@ -72,12 +72,12 @@ const Contact = () => {
       icon: MapPin,
       title: "Visit Our Office",
       details: [
-        "7 Laddier Street, The Rides",
-        "Centurion, Gauteng, 0061",
+        "11 Bottlebrush St, Ferndale",
+        "Randburg, Gauteng, 2194",
         "South Africa",
       ],
       action: "Get Directions",
-      href: "https://maps.google.com/?q=7+Laddier+Street,+The+Rides,+Centurion,+Gauteng,+0061",
+      href: "https://maps.google.com/?q=11+Bottlebrush+St,+Ferndale,+Randburg,+2194,+South+Africa",
     },
     {
       icon: Phone,

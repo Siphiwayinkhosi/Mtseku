@@ -53,7 +53,7 @@ const Hero = () => {
     <section
       id="home"
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 sm:pt-32"
       style={{
         backgroundImage: `url(${heroImage})`,
         backgroundSize: 'cover',
@@ -76,7 +76,7 @@ const Hero = () => {
           {/* Main Heading */}
           <h1
             ref={titleRef}
-            className="hero-text text-5xl sm:text-6xl lg:text-7xl mb-6"
+            className="hero-text text-4xl sm:text-6xl lg:text-7xl mb-6 leading-tight"
           >
             Safe, Reliable &amp;<br />
             <span className="text-accent">Professional</span><br />
@@ -86,10 +86,12 @@ const Hero = () => {
           {/* Subtitle */}
           <p
             ref={subtitleRef}
-            className="text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-lg sm:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            Premium shuttle services, tours, and private hire solutions across Cape Town &amp; Johannesburg. 
-            Your trusted transport partner in South Africa.
+            Welcome to Mtseku Transport Services.
+            We go beyond just getting you from point A to B. Whether you need premium shuttles, private transfers,
+            or tailored tours across Cape Town and Johannesburg, our mission is to make every journey safe, comfortable, and memorable. 
+            Discover why we’re the trusted choice for individuals, families, and businesses across South Africa.
           </p>
 
           {/* CTA Buttons */}
@@ -128,8 +130,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-    
     </section>
   );
 };

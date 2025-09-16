@@ -48,7 +48,7 @@ const Navbar = () => {
                 isScrolled ? "text-primary" : "text-white"
               }`}
             >
-              Mtseku Transport
+              Mtseku Transport Services (Pty) Ltd
             </h1>
           </div>
 

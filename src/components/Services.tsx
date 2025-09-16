@@ -66,7 +66,7 @@ const Services = () => {
       title: "Tours & Sightseeing",
       description: "Discover South Africa's beauty with our guided tours. From wine estates to cultural landmarks, we make every journey memorable.",
       image: toursImage,
-      features: ["Wine Tours", "City Tours", "Cultural Experiences", "Custom Itineraries"]
+      features: ["Wine Tours", "Garden Route", "Cultural Experiences", "Custom Itineraries"]
     },
     {
       icon: Car,
@@ -78,9 +78,9 @@ const Services = () => {
     {
       icon: Briefcase,
       title: "Contract Transport",
-      description: "Long-term transport solutions for businesses. Reliable fleet management and dedicated service for your organization.",
+      description: "Reliable, long-term transport solutions for businesses and individuals who need regular, dedicated vehicles. We provide well-maintained cars with professional drivers, tailored to your schedule and requirements.",
       image: contractTransportImage,
-      features: ["Fleet Management", "Dedicated Drivers", "Custom Schedules", "Business Solutions"]
+      features: ["Professional Service", "Dedicated Vehicles & Drivers", "Flexible Schedules", "Customized Solutions"]
     }
   ];
 

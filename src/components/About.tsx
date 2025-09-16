@@ -115,24 +115,25 @@ const About = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main About Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
-          {/* Image */}
-          <div ref={imageRef} className="relative">
-            <div className="relative overflow-hidden rounded-2xl shadow-large">
-              <img
-                src={aboutImage}
-                alt="Mtseku Transport Office and Team"
-                className="w-full h-96 object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-orange-500/20"></div>
-            </div>
-            {/* Floating Stat */}
-            <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl p-6 shadow-xl">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">100%</div>
-                <div className="text-sm text-gray-600">Trusted Service</div>
-              </div>
-            </div>
-          </div>
+        {/* Image */}
+<div ref={imageRef} className="relative h-full flex items-stretch">
+  <div className="relative overflow-hidden rounded-2xl shadow-large w-full h-full">
+    <img
+      src={aboutImage}
+      alt="Mtseku Transport Office and Team"
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-orange-500/20"></div>
+  </div>
+  {/* Floating Stat */}
+  <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl p-6 shadow-xl">
+    <div className="text-center">
+      <div className="text-3xl font-bold text-blue-600">100%</div>
+      <div className="text-sm text-gray-600">Trusted Service</div>
+    </div>
+  </div>
+</div>
+
 
           {/* Content */}
           <div ref={contentRef} className="space-y-8">
@@ -141,14 +142,19 @@ const About = () => {
                 About <span className="text-orange-500">Mtseku Transport</span>
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                Founded on the principles of safety, reliability, and excellence,
-                Mtseku Transport Services is dedicated to serving South Africa
-                with premium transport solutions.
+              At Mtseku Transport Services, your journey is our priority. 
+              We are founded on the values of safety, reliability, and excellence, 
+              ensuring that every ride is handled with the utmost care.
+
+Our commitment to passenger safety goes beyond compliance — from well-maintained vehicles and insured passenger liability to trained,
+ professional drivers who put your well-being first.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                From shuttle services to luxury tours, we pride ourselves on
-                delivering personalized, professional transport experiences that
-                exceed expectations across Cape Town and Johannesburg.
+               We specialize in premium shuttle services, private hire, and luxury tours, offering seamless travel across Cape Town and Johannesburg. 
+               Whether you’re heading to the airport, exploring South Africa’s landmarks, or arranging corporate transfers, you can trust us to deliver a safe, 
+               comfortable, and professional experience every time.
+
+With Mtseku, you don’t just reach your destination — you arrive with confidence
               </p>
             </div>
 
