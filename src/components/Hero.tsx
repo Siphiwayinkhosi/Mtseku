@@ -113,21 +113,28 @@ const Hero = () => {
             </button>
           </div>
 
-          {/* Key Features */}
-          <div ref={featuresRef} className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="flex items-center justify-center sm:justify-start text-white/90">
-              <Shield className="h-6 w-6 text-accent mr-3" />
-              <span className="font-semibold">Safety First</span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start text-white/90">
-              <Clock className="h-6 w-6 text-accent mr-3" />
-              <span className="font-semibold">Always On Time</span>
-            </div>
-            <div className="flex items-center justify-center sm:justify-start text-white/90">
-              <Star className="h-6 w-6 text-accent mr-3" />
-              <span className="font-semibold">Premium Service</span>
-            </div>
-          </div>
+{/* Key Features */}
+<div
+  ref={featuresRef}
+  className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-3xl mx-auto"
+>
+  <div className="flex flex-col items-center text-white/90">
+    <Shield className="h-8 w-8 text-accent mb-2" />
+    <span className="font-semibold">Safety First</span>
+  </div>
+
+  <div className="flex flex-col items-center text-white/90">
+    <Clock className="h-8 w-8 text-accent mb-2" />
+    <span className="font-semibold">Always On Time</span>
+  </div>
+
+  <div className="flex flex-col items-center text-white/90">
+    <Star className="h-8 w-8 text-accent mb-2" />
+    <span className="font-semibold">Premium Service</span>
+  </div>
+</div>
+
+
         </div>
       </div>
     </section>
