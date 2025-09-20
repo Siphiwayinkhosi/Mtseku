@@ -88,10 +88,9 @@ const Hero = () => {
             ref={subtitleRef}
             className="text-lg sm:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            Welcome to Mtseku Transport Services.
-            We go beyond just getting you from point A to B. Whether you need premium shuttles, private transfers,
-            or tailored tours across Cape Town and Johannesburg, our mission is to make every journey safe, comfortable, and memorable. 
-            Discover why we’re the trusted choice for individuals, families, and businesses across South Africa.
+          Welcome to Mtseku Transport Services.
+From Cape Town to Johannesburg, we provide safe, reliable, and comfortable shuttles, private transfers, and tailored tours.
+ Trusted by individuals, families, and businesses across South Africa.
           </p>
 
           {/* CTA Buttons */}

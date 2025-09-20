@@ -141,10 +141,16 @@ const Footer = () => {
               © {currentYear} Mtseku Transport Services (Pty) Ltd. All rights reserved.
             </div>
             
-            <div className="flex items-center space-x-6 text-sm">
+            <div className="flex flex-col md:flex-row items-center md:space-x-6 text-sm space-y-2 md:space-y-0">
               <span className="text-white/60">
                 Built with excellence for South African transport
               </span>
+              {/* Legal Text */}
+              <div className="flex space-x-4 text-white/60">
+                <span>Privacy</span>
+                <span>Cookie Notice</span>
+                <span>Terms of Use</span>
+              </div>
             </div>
           </div>
         </div>
