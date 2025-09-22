@@ -3,11 +3,11 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import fleetImage from '@/assets/gallery1.jpg';
-import airportImage from '@/assets/gallery2.jpg';
+import airportImage from '@/assets/service4.jpg';
 import wineTourImage from '@/assets/gallery3.jpg';
 import corporateImage from '@/assets/gallery4.jpg';
 import scenicImage from '@/assets/gallery5.jpg';
-import vipImage from '@/assets/gallery6.jpg';
+import vipImage from '@/assets/gallery.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 

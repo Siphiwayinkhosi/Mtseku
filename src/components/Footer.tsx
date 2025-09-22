@@ -147,9 +147,12 @@ const Footer = () => {
               </span>
               {/* Legal Text */}
               <div className="flex space-x-4 text-white/60">
-                <span>Privacy</span>
-                <span>Cookie Notice</span>
-                <span>Terms of Use</span>
+                <div className="flex space-x-4 text-white/60">
+  <a href="/privacy-policy" className="hover:text-accent transition-colors duration-300">Privacy</a>
+  <a href="/cookie-notice" className="hover:text-accent transition-colors duration-300">Cookie Notice</a>
+  <a href="/terms-of-use" className="hover:text-accent transition-colors duration-300">Terms of Use</a>
+</div>
+
               </div>
             </div>
           </div>
