@@ -17,12 +17,11 @@ const Contact = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
   const faqRef = useRef<HTMLDivElement>(null);
-
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header
+      // Header animation
       gsap.fromTo(
         headerRef.current?.children || [],
         { opacity: 0, y: 60 },
@@ -50,7 +49,7 @@ const Contact = () => {
         }
       );
 
-      // FAQ
+      // FAQ section
       gsap.fromTo(
         faqRef.current,
         { opacity: 0, y: 80 },
@@ -70,14 +69,25 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: MapPin,
-      title: "Visit Our Office",
+      title: "Johannesburg Office",
       details: [
         "11 Bottlebrush St, Ferndale",
-        "Randburg, Gauteng, 2194",
+        "Randburg, 2194",
         "South Africa",
       ],
       action: "Get Directions",
       href: "https://maps.google.com/?q=11+Bottlebrush+St,+Ferndale,+Randburg,+2194,+South+Africa",
+    },
+    {
+      icon: MapPin,
+      title: "Cape Town Office",
+      details: [
+        "61 Ravenswood Drive",
+        "Parklands, Cape Town",
+        "South Africa",
+      ],
+      action: "Get Directions",
+      href: "https://maps.google.com/?q=61+Ravenswood+Drive,+Parklands,+Cape+Town,+7441,+South+Africa",
     },
     {
       icon: Phone,
@@ -126,7 +136,11 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" ref={sectionRef} className="py-20 bg-gradient-to-b from-white to-blue-50">
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="py-20 bg-gradient-to-b from-white to-blue-50"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div ref={headerRef} className="text-center mb-16">
@@ -140,7 +154,10 @@ const Contact = () => {
         </div>
 
         {/* Contact Info Cards */}
-        <div ref={infoRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div
+          ref={infoRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+        >
           {contactInfo.map((info, index) => (
             <div
               key={index}
@@ -151,10 +168,14 @@ const Contact = () => {
                   <info.icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">{info.title}</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                    {info.title}
+                  </h4>
                   <div className="space-y-1 mb-4">
                     {info.details.map((detail, i) => (
-                      <p key={i} className="text-gray-600 text-sm">{detail}</p>
+                      <p key={i} className="text-gray-600 text-sm">
+                        {detail}
+                      </p>
                     ))}
                   </div>
                   <a
@@ -191,12 +212,17 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* FAQ */}
+        {/* FAQ Section */}
         <div ref={faqRef} className="max-w-3xl mx-auto">
-          <h3 className="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h3>
+          <h3 className="text-3xl font-bold text-center mb-10">
+            Frequently Asked Questions
+          </h3>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-xl overflow-hidden">
+              <div
+                key={index}
+                className="border border-gray-200 rounded-xl overflow-hidden"
+              >
                 <button
                   className="w-full flex justify-between items-center px-6 py-4 text-left font-medium text-gray-800 hover:bg-gray-50 transition-colors"
                   onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
@@ -209,7 +235,9 @@ const Contact = () => {
                   />
                 </button>
                 {openFAQ === index && (
-                  <div className="px-6 pb-4 text-gray-600 text-sm">{faq.answer}</div>
+                  <div className="px-6 pb-4 text-gray-600 text-sm">
+                    {faq.answer}
+                  </div>
                 )}
               </div>
             ))}
