@@ -76,34 +76,33 @@ const About = () => {
   const pillars = [
     {
       icon: Building2,
-      title: "Commitment to Community Development",
+      title: "Community Impact",
       text: [
-        "We strive to uplift the communities we serve in Cape Town, Johannesburg, and across South Africa by creating local employment and training opportunities, supporting youth and skills development initiatives in the transport and logistics sector, partnering with local organisations and schools to promote road safety awareness, and contributing to community projects that improve education, health, and access to opportunities.",
-        "Our goal is to grow with the community — not apart from it.",
+        "We create local employment, support youth and skills development, and partner with organisations to promote road safety and community growth in Cape Town, Johannesburg, and beyond.",
       ],
     },
     {
       icon: Leaf,
-      title: "Environmental Responsibility",
+      title: "Environmental  Care",
       text: [
-        "We are committed to reducing our environmental footprint and promoting sustainable transport practices through maintaining a fuel-efficient and well-serviced vehicle fleet, exploring eco-friendly vehicle technologies where possible, reducing paper use through digital booking and invoicing systems, and promoting awareness among our drivers and customers about environmentally responsible travel.",
-        "We believe small, consistent actions lead to a cleaner and more sustainable South Africa.",
+        
+        "We operate a well-maintained, fuel-efficient fleet, promote digital systems to reduce waste, and explore greener transport options for a sustainable future.",
+
       ],
     },
     {
       icon: HandHeart,
-      title: "Employee Welfare and Fair Practices",
+      title: "Employee Wellbeing",
       text: [
-        "Our people are at the heart of our success. We promote fair and ethical employment practices by providing safe working conditions and ongoing driver training, promoting diversity and inclusion within our team, ensuring compliance with labour laws, B-BBEE policies, and industry standards, and recognising and rewarding dedication, responsibility, and professionalism.",
-        "We take pride in being a company where employees can grow, learn, and lead.",
+        
+"Our drivers and staff are the heart of our business. We ensure fair working conditions, ongoing training, and equal opportunities for all.",
       ],
     },
     {
       icon: Scale,
-      title: "Ethical Business Conduct",
+      title: "Ethical Conduct",
       text: [
-        "We are guided by honesty, transparency, and accountability in all that we do. Mtseku Transport Service upholds integrity in our business dealings with clients, suppliers, and partners, compliance with the Companies Act, Consumer Protection Act (CPA), and Road Transport legislation, and a zero-tolerance approach to corruption, discrimination, and unethical conduct.",
-        "We believe trust is earned through consistent ethical behaviour.",
+        "Integrity and accountability guide all we do. We comply with the Companies Act, CPA, and transport laws, maintaining a zero-tolerance approach to corruption or unethical practices.",
       ],
     },
     {
@@ -111,7 +110,7 @@ const About = () => {
       title: "Building a Better Future",
       text: [
         "As we continue to expand, we remain dedicated to empowering our communities through sustainable initiatives, operating responsibly and with respect for people and the planet, and being a transport company that drives both progress and purpose.",
-        "At Mtseku Transport Service (Pty) Ltd, we don’t just move people — we move communities forward.",
+        "Mtseku Transport — driving progress, people, and purpose across South Africa",
       ],
     },
   ];

@@ -100,16 +100,30 @@ const Footer = () => {
             {/* Contact Info */}
             <div>
               <h4 className="text-lg font-semibold mb-6">Contact Info</h4>
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Johannesburg Office */}
                 <div className="flex items-start space-x-3">
                   <MapPin className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
                   <div className="text-white/80 text-sm">
-                    <p>7 Laddier Street, The Rides</p>
-                    <p>Centurion, Gauteng, 0061</p>
+                    <p className="font-semibold text-white">Johannesburg Office</p>
+                    <p>11 Bottlebrush St, Ferndale</p>
+                    <p>Randburg, 2194</p>
                     <p>South Africa</p>
                   </div>
                 </div>
-                
+
+                {/* Cape Town Office */}
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
+                  <div className="text-white/80 text-sm">
+                    <p className="font-semibold text-white">Cape Town Office</p>
+                    <p>61 Ravenswood Drive</p>
+                    <p>Parklands, Cape Town</p>
+                    <p>South Africa</p>
+                  </div>
+                </div>
+
+                {/* Phone */}
                 <div className="flex items-center space-x-3">
                   <Phone className="h-5 w-5 text-accent flex-shrink-0" />
                   <a
@@ -119,7 +133,8 @@ const Footer = () => {
                     +27 78 868 6706
                   </a>
                 </div>
-                
+
+                {/* Email */}
                 <div className="flex items-center space-x-3">
                   <Mail className="h-5 w-5 text-accent flex-shrink-0" />
                   <a
@@ -140,19 +155,21 @@ const Footer = () => {
             <div className="text-white/60 text-sm text-center md:text-left">
               © {currentYear} Mtseku Transport Services (Pty) Ltd. All rights reserved.
             </div>
-            
+
             <div className="flex flex-col md:flex-row items-center md:space-x-6 text-sm space-y-2 md:space-y-0">
               <span className="text-white/60">
                 Built with excellence for South African transport
               </span>
-              {/* Legal Text */}
               <div className="flex space-x-4 text-white/60">
-                <div className="flex space-x-4 text-white/60">
-  <a href="/privacy-policy" className="hover:text-accent transition-colors duration-300">Privacy</a>
-  <a href="/cookie-notice" className="hover:text-accent transition-colors duration-300">Cookie Notice</a>
-  <a href="/terms-of-use" className="hover:text-accent transition-colors duration-300">Terms of Use</a>
-</div>
-
+                <a href="/privacy-policy" className="hover:text-accent transition-colors duration-300">
+                  Privacy
+                </a>
+                <a href="/cookie-notice" className="hover:text-accent transition-colors duration-300">
+                  Cookie Notice
+                </a>
+                <a href="/terms-of-use" className="hover:text-accent transition-colors duration-300">
+                  Terms of Use
+                </a>
               </div>
             </div>
           </div>

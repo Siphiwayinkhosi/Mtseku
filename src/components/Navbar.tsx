@@ -60,8 +60,8 @@ const Navbar = () => {
             </h1>
           </div>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:block">
+          {/* Desktop Nav (now only from lg and up) */}
+          <div className="hidden lg:block">
             <div className="ml-10 flex items-baseline space-x-8">
               {navItems.map((item) => (
                 <button
@@ -79,8 +79,8 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="hidden md:block">
+          {/* CTA (now only from lg and up) */}
+          <div className="hidden lg:block">
             <a
               href="https://wa.me/27788686706"
               target="_blank"
@@ -93,12 +93,12 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden z-50">
+          {/* Mobile/Tablet menu button (shows below lg) */}
+          <div className="lg:hidden z-50">
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md bg-black/60 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="p-2 rounded-md bg-black/60 text-white hover:bg黑/80 focus:outline-none focus:ring-2 focus:ring-accent"
             >
               {isMobileMenuOpen ? (
                 <motion.div
@@ -121,7 +121,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Nav with Animation */}
+        {/* Mobile/Tablet Nav (shows below lg) */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -129,7 +129,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="md:hidden bg-white/95 backdrop-blur-lg rounded-lg shadow-lg mt-2 overflow-hidden"
+              className="lg:hidden bg-white/95 backdrop-blur-lg rounded-lg shadow-lg mt-2 overflow-hidden"
             >
               <motion.div
                 className="px-2 pt-2 pb-3 space-y-1"
