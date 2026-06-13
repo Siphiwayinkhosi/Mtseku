@@ -1,4 +1,6 @@
+import { ImapFlow } from "imapflow";
 import nodemailer from "nodemailer";
+import MailComposer from "nodemailer/lib/mail-composer";
 
 const DEFAULT_RECIPIENT = "Tony.Noyila@outlook.com";
 const DEFAULT_CC = "siphiwayinkhosi.mahlalela9646@gmail.com";
@@ -240,32 +242,55 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       address: gmailUser,
     };
 
-    await Promise.all([
-      transporter.sendMail({
-        from,
-        to: bookingRecipient,
-        replyTo: data.email,
-        subject: email.subject,
-        text: email.text,
-        html: email.html,
-      }),
-      transporter.sendMail({
-        from,
-        to: copyRecipient,
-        replyTo: data.email,
-        subject: `[Booking copy] ${email.subject}`,
-        text: `This is your inbox copy of the booking request sent to ${bookingRecipient}.\n\n${email.text}`,
-        html: `
-          <p style="font-family:Arial,sans-serif;color:#344257;">
-            This is your inbox copy of the booking request sent to
-            <strong>${escapeHtml(bookingRecipient)}</strong>.
-          </p>
-          ${email.html}
-        `,
-      }),
-    ]);
+    const inboxCopy = await new MailComposer({
+      from,
+      to: copyRecipient,
+      replyTo: data.email,
+      subject: `[Booking copy] ${email.subject}`,
+      text: `This is your internal copy of a new Mtseku website booking request.\n\n${email.text}`,
+      html: `
+        <p style="font-family:Arial,sans-serif;color:#344257;">
+          This is your internal copy of a new Mtseku website booking request.
+        </p>
+        ${email.html}
+      `,
+    })
+      .compile()
+      .build();
+
+    const imapClient = new ImapFlow({
+      host: "imap.gmail.com",
+      port: 993,
+      secure: true,
+      auth: {
+        user: gmailUser,
+        pass: gmailAppPassword,
+      },
+      logger: false,
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
+    });
+
+    try {
+      await imapClient.connect();
+      await imapClient.append("INBOX", inboxCopy);
+    } finally {
+      if (imapClient.usable) {
+        await imapClient.logout();
+      }
+    }
+
+    await transporter.sendMail({
+      from,
+      to: bookingRecipient,
+      replyTo: data.email,
+      subject: email.subject,
+      text: email.text,
+      html: email.html,
+    });
   } catch (providerError) {
-    console.error("Gmail SMTP booking delivery failed:", providerError);
+    console.error("Gmail booking delivery failed:", providerError);
     return response.status(502).json({
       error:
         "We could not send your request right now. Please try again or use WhatsApp.",
