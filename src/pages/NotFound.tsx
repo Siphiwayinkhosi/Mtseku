@@ -1,23 +1,19 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { usePageMeta } from "@/hooks/use-page-meta";
+import { SEO_PAGES } from "@/lib/seo-pages.mjs";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+  usePageMeta(SEO_PAGES["/404"]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
-      </div>
-    </div>
+    <main className="not-found">
+      <p>404</p>
+      <h1>This route has reached a dead end.</h1>
+      <span>The page you requested could not be found.</span>
+      <Link className="button button-accent" to="/">
+        Return to Mtseku Transport
+      </Link>
+    </main>
   );
 };
 

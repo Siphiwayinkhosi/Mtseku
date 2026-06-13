@@ -1,73 +1,43 @@
-# Welcome to your Lovable project
+# Mtseku Transport Services
 
-## Project info
+Multi-page React and Vite website for Mtseku Transport Services.
 
-**URL**: https://lovable.dev/projects/29d41704-3ad9-4c3b-939a-aa23394331de
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/29d41704-3ad9-4c3b-939a-aa23394331de) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Local development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The booking email endpoint is a Vercel Function at `/api/booking`. Use
+`vercel dev` when testing that endpoint locally.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Booking email setup
 
-**Use GitHub Codespaces**
+The booking form sends through Resend from the server. It does not expose an
+email API key in the browser and does not use FormSubmit.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Add these environment variables to the Vercel project:
 
-## What technologies are used for this project?
+```text
+RESEND_API_KEY
+BOOKING_EMAIL_FROM
+BOOKING_EMAIL_TO
+BOOKING_EMAIL_CC
+VITE_SITE_URL
+```
 
-This project is built with:
+`BOOKING_EMAIL_FROM` must use a domain verified in Resend. The defaults in the
+code send to `Tony.Noyila@outlook.com` and CC
+`siphiwayinkhosi.mahlalela9646@gmail.com`, but setting both variables explicitly
+in Vercel is recommended.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Production
 
-## How can I deploy this project?
+```sh
+npm run build
+```
 
-Simply open [Lovable](https://lovable.dev/projects/29d41704-3ad9-4c3b-939a-aa23394331de) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The build also generates route-specific HTML metadata, `sitemap.xml`, and
+`robots.txt`. Pushes to the production branch deploy automatically when the
+GitHub repository is connected to Vercel.

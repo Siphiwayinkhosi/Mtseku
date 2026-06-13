@@ -1,182 +1,114 @@
-import React from 'react';
-import { MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
+import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
+import { BUSINESS, NAV_ITEMS, whatsappBookingUrl } from "@/lib/site";
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
-  const quickLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About Us', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Our Drivers', href: '#drivers' },
-    { name: 'Contact', href: '#contact' }
-  ];
-
-  const services = [
-    'Shuttle Services',
-    'Tours & Sightseeing',
-    'Private Hire',
-    'Contract Transport'
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <footer className="bg-primary text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
-        <div className="py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Company Info */}
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-2xl font-display font-bold mb-4">
-                  Mtseku Transport
-                </h3>
-                <p className="text-white/80 leading-relaxed">
-                  Professional transport services across Cape Town and Johannesburg. 
-                  Safe, reliable, and premium solutions for all your travel needs.
-                </p>
-              </div>
-              
-              <div className="flex space-x-4">
-                <a
-                  href="https://wa.me/27788686706"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors duration-300"
-                >
-                  <MessageCircle className="h-5 w-5" />
-                </a>
-                <a
-                  href="tel:+27788686706"
-                  className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors duration-300"
-                >
-                  <Phone className="h-5 w-5" />
-                </a>
-                <a
-                  href="mailto:Tony.Noyila@outlook.com"
-                  className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors duration-300"
-                >
-                  <Mail className="h-5 w-5" />
-                </a>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
-              <ul className="space-y-3">
-                {quickLinks.map((link, index) => (
-                  <li key={index}>
-                    <button
-                      onClick={() => scrollToSection(link.href)}
-                      className="text-white/80 hover:text-accent transition-colors duration-300"
-                    >
-                      {link.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h4 className="text-lg font-semibold mb-6">Our Services</h4>
-              <ul className="space-y-3">
-                {services.map((service, index) => (
-                  <li key={index}>
-                    <span className="text-white/80">{service}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-              <h4 className="text-lg font-semibold mb-6">Contact Info</h4>
-              <div className="space-y-6">
-                {/* Johannesburg Office */}
-                <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
-                  <div className="text-white/80 text-sm">
-                    <p className="font-semibold text-white">Johannesburg Office</p>
-                    <p>11 Bottlebrush St, Ferndale</p>
-                    <p>Randburg, 2194</p>
-                    <p>South Africa</p>
-                  </div>
-                </div>
-
-                {/* Cape Town Office */}
-                <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-accent mt-1 flex-shrink-0" />
-                  <div className="text-white/80 text-sm">
-                    <p className="font-semibold text-white">Cape Town Office</p>
-                    <p>61 Ravenswood Drive</p>
-                    <p>Parklands, Cape Town</p>
-                    <p>South Africa</p>
-                  </div>
-                </div>
-
-                {/* Phone */}
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-accent flex-shrink-0" />
-                  <a
-                    href="tel:+27788686706"
-                    className="text-white/80 hover:text-accent transition-colors duration-300 text-sm"
-                  >
-                    +27 78 868 6706
-                  </a>
-                </div>
-
-                {/* Email */}
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-accent flex-shrink-0" />
-                  <a
-                    href="mailto:Tony.Noyila@outlook.com"
-                    className="text-white/80 hover:text-accent transition-colors duration-300 text-sm"
-                  >
-                    Tony.Noyila@outlook.com
-                  </a>
-                </div>
-              </div>
-            </div>
+const Footer = () => (
+  <footer className="site-footer">
+    <div className="page-container">
+      <div className="footer-main">
+        <div className="footer-brand">
+          <Link className="brand footer-brand-lockup" to="/" aria-label={`${BUSINESS.name} home`}>
+            <span className="brand-mark">
+              <img
+                src="/mtseku-mark-light.png"
+                alt=""
+                width="984"
+                height="376"
+                loading="lazy"
+                aria-hidden="true"
+              />
+            </span>
+            <span className="brand-wordmark" aria-hidden="true">
+              <strong>MTSEKU</strong>
+              <small>Transport Services</small>
+            </span>
+          </Link>
+          <p>
+            Shuttle services, airport transfers, private hire, tours and
+            contract transport across Cape Town, Johannesburg and beyond.
+          </p>
+          <div className="footer-social">
+            <a
+              href={whatsappBookingUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Book Mtseku Transport on WhatsApp"
+            >
+              <MessageCircle aria-hidden="true" />
+            </a>
+            <a
+              href={BUSINESS.phoneHref}
+              aria-label={`Call ${BUSINESS.phoneDisplay}`}
+            >
+              <Phone aria-hidden="true" />
+            </a>
+            <a href={BUSINESS.emailHref} aria-label={`Email ${BUSINESS.email}`}>
+              <Mail aria-hidden="true" />
+            </a>
           </div>
         </div>
 
-        {/* Bottom Footer */}
-        <div className="border-t border-white/20 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-white/60 text-sm text-center md:text-left">
-              © {currentYear} Mtseku Transport Services (Pty) Ltd. All rights reserved.
-            </div>
+        <div className="footer-column">
+          <h2>Navigate</h2>
+          <nav aria-label="Footer navigation">
+            {NAV_ITEMS.map((item) => (
+              <Link key={item.href} to={item.href}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-            <div className="flex flex-col md:flex-row items-center md:space-x-6 text-sm space-y-2 md:space-y-0">
-              <span className="text-white/60">
-                Built with excellence for South African transport
+        <div className="footer-column">
+          <h2>Services</h2>
+          <Link to="/services#services">Shuttle services</Link>
+          <Link to="/services#services">Tours &amp; sightseeing</Link>
+          <Link to="/services#services">Private hire</Link>
+          <Link to="/services#services">Contract transport</Link>
+          <Link to="/services#services">Airport transfers</Link>
+        </div>
+
+        <div className="footer-column footer-contact">
+          <h2>Contact</h2>
+          {BUSINESS.addresses.map((address) => (
+            <a
+              key={address.city}
+              href={address.directions}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MapPin aria-hidden="true" />
+              <span>
+                <strong>{address.city}</strong>
+                {address.lines[0]}
+                <br />
+                {address.lines[1]}
               </span>
-              <div className="flex space-x-4 text-white/60">
-                <a href="/privacy-policy" className="hover:text-accent transition-colors duration-300">
-                  Privacy
-                </a>
-                <a href="/cookie-notice" className="hover:text-accent transition-colors duration-300">
-                  Cookie Notice
-                </a>
-                <a href="/terms-of-use" className="hover:text-accent transition-colors duration-300">
-                  Terms of Use
-                </a>
-              </div>
-            </div>
-          </div>
+            </a>
+          ))}
+          <a href={BUSINESS.phoneHref}>
+            <Phone aria-hidden="true" />
+            {BUSINESS.phoneDisplay}
+          </a>
+          <a href={BUSINESS.emailHref}>
+            <Mail aria-hidden="true" />
+            {BUSINESS.email}
+          </a>
         </div>
       </div>
-    </footer>
-  );
-};
+
+      <div className="footer-bottom">
+        <p>
+          © {new Date().getFullYear()} {BUSINESS.legalName}. All rights reserved.
+        </p>
+        <nav aria-label="Legal">
+          <Link to="/privacy-policy">Privacy</Link>
+          <Link to="/cookie-notice">Cookie notice</Link>
+          <Link to="/terms-of-use">Terms of use</Link>
+        </nav>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;

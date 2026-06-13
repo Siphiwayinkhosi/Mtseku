@@ -1,142 +1,135 @@
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ArrowRight, Shield, Clock, Star } from 'lucide-react';
-import heroImage from '@/assets/hero.jpg';
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  MapPinned,
+  MessageCircle,
+  Phone,
+  ShieldCheck,
+  UserRoundCheck,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero.webp";
+import { BUSINESS, whatsappBookingUrl } from "@/lib/site";
 
 const Hero = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Hero entrance animation
-      const tl = gsap.timeline({ delay: 0.5 });
-      
-      tl.fromTo(titleRef.current, 
-        { opacity: 0, y: 100 },
-        { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }
-      )
-      .fromTo(subtitleRef.current,
-        { opacity: 0, y: 60 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out" },
-        "-=0.8"
-      )
-      .fromTo(ctaRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-        "-=0.6"
-      )
-      .fromTo(featuresRef.current?.children || [],
-        { opacity: 0, x: -50 },
-        { opacity: 1, x: 0, duration: 0.6, stagger: 0.2, ease: "power3.out" },
-        "-=0.4"
-      );
-
-      // Floating animation for background elements
-      gsap.to(".float-element", {
-        y: -30,
-        duration: 4,
-        ease: "power2.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: 1
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section
-      id="home"
-      ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 sm:pt-32"
-      style={{
-        backgroundImage: `url(${heroImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-overlay"></div>
-      
-      {/* Floating Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="float-element absolute top-20 left-10 w-32 h-32 bg-accent/10 rounded-full blur-xl"></div>
-        <div className="float-element absolute bottom-40 right-20 w-48 h-48 bg-primary/10 rounded-full blur-xl"></div>
-        <div className="float-element absolute top-1/2 left-1/4 w-24 h-24 bg-white/5 rounded-full blur-lg"></div>
+    <section id="home" className="hero-section" aria-labelledby="hero-title">
+      <img
+        className="hero-background"
+        src={heroImage}
+        alt="Mtseku shuttle vehicles beside the Cape Town coastline"
+        width="1280"
+        height="960"
+        fetchPriority="high"
+        decoding="async"
+        data-parallax="0.23"
+      />
+      <div className="hero-shade" aria-hidden="true" />
+      <div className="route-lines" aria-hidden="true" data-parallax="-0.08">
+        <span />
+        <span />
+        <span />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="max-w-4xl mx-auto">
-          {/* Main Heading */}
-          <h1
-            ref={titleRef}
-            className="hero-text text-4xl sm:text-6xl lg:text-7xl mb-6 leading-tight"
-          >
-            Safe, Reliable &amp;<br />
-            <span className="text-accent">Professional</span><br />
-            Transport Services
+      <div className="page-container hero-layout">
+        <div className="hero-copy">
+          <p className="eyebrow eyebrow-light">
+            Cape Town · Johannesburg · Transport across South Africa
+          </p>
+          <h1 id="hero-title">
+            Professional transport,
+            <span>planned around your journey.</span>
           </h1>
-
-          {/* Subtitle */}
-          <p
-            ref={subtitleRef}
-            className="text-lg sm:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed"
-          >
-      Welcome to Mtseku Transport Services. 
-      Operating across South Africa with a strong presence in Cape Town and Johannesburg,
-       we deliver safe, reliable, and comfortable shuttles, private transfers, and bespoke tours.
-        Trusted by individuals, families, and businesses nationwide.
+          <p className="hero-intro">
+            Safe, reliable and comfortable shuttle services, airport transfers,
+            private hire, tours and contract transport for individuals,
+            families, groups and businesses.
           </p>
 
-          {/* CTA Buttons */}
-          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+          <div className="hero-actions">
             <a
-              href="https://wa.me/27788686706"
+              className="button button-accent"
+              href={whatsappBookingUrl}
               target="_blank"
-              rel="noopener noreferrer"
-              className="btn-accent inline-flex items-center justify-center group"
+              rel="noreferrer"
             >
-              Book Your Journey
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+              <MessageCircle aria-hidden="true" />
+              Book on WhatsApp
             </a>
-            <button
-              onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-              className="btn-outline"
+            <Link className="button button-ghost" to="/contact#booking">
+              Request transport
+              <ArrowRight aria-hidden="true" />
+            </Link>
+            <a
+              className="hero-call"
+              href={BUSINESS.phoneHref}
+              aria-label={`Call Mtseku Transport Services on ${BUSINESS.phoneDisplay}`}
             >
-              Our Services
-            </button>
+              <Phone aria-hidden="true" />
+              {BUSINESS.phoneDisplay}
+            </a>
           </div>
 
-{/* Key Features */}
-<div
-  ref={featuresRef}
-  className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-3xl mx-auto"
->
-  <div className="flex flex-col items-center text-white/90">
-    <Shield className="h-8 w-8 text-accent mb-2" />
-    <span className="font-semibold">Safety First</span>
-  </div>
-
-  <div className="flex flex-col items-center text-white/90">
-    <Clock className="h-8 w-8 text-accent mb-2" />
-    <span className="font-semibold">Always On Time</span>
-  </div>
-
-  <div className="flex flex-col items-center text-white/90">
-    <Star className="h-8 w-8 text-accent mb-2" />
-    <span className="font-semibold">Premium Service</span>
-  </div>
-</div>
-
-
+          <ul className="hero-trust" aria-label="Service highlights">
+            <li>
+              <UserRoundCheck aria-hidden="true" />
+              Professional drivers
+            </li>
+            <li>
+              <ShieldCheck aria-hidden="true" />
+              Passenger liability insurance
+            </li>
+            <li>
+              <MapPinned aria-hidden="true" />
+              Cape Town &amp; Johannesburg
+            </li>
+            <li>
+              <BriefcaseBusiness aria-hidden="true" />
+              Private &amp; business travel
+            </li>
+          </ul>
         </div>
+
+        <aside
+          className="hero-route-card"
+          aria-label="Mtseku service overview"
+          data-parallax="-0.07"
+        >
+          <p className="route-card-kicker">Your route. Our responsibility.</p>
+          <div className="route-card-path" aria-hidden="true">
+            <span className="route-dot route-dot-start" />
+            <span className="route-track" />
+            <span className="route-dot route-dot-end" />
+          </div>
+          <div className="route-stops">
+            <div>
+              <span>From</span>
+              <strong>Your pickup point</strong>
+            </div>
+            <div>
+              <span>To</span>
+              <strong>Your destination</strong>
+            </div>
+          </div>
+          <p>
+            Tell us where, when and how many passengers. We will help plan the
+            right transport solution.
+          </p>
+          <Link to="/contact#booking">
+            Start a booking request
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        </aside>
       </div>
+
+      <a
+        className="hero-scroll"
+        href="#start-here"
+        aria-label="Scroll to the website guide"
+      >
+        <span aria-hidden="true" />
+        Choose your path
+      </a>
     </section>
   );
 };

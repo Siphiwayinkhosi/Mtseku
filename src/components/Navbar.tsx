@@ -1,177 +1,126 @@
-import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Menu, MessageCircle, X } from "lucide-react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { BUSINESS, NAV_ITEMS, whatsappBookingUrl } from "@/lib/site";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // prevent horizontal scroll & lock body when menu open
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.documentElement.style.overflowX = "hidden";
-      document.body.style.overflow = "hidden";
-    } else {
-      document.documentElement.style.overflowX = "hidden";
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
       document.body.style.overflow = "";
-    }
-  }, [isMobileMenuOpen]);
+    };
+  }, [isOpen]);
 
-  const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Services", href: "#services" },
-    { name: "Drivers", href: "#drivers" },
-    { name: "Contact", href: "#contact" },
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-    setIsMobileMenuOpen(false);
-  };
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-lg shadow-md" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1
-              className={`text-2xl font-display font-bold transition-colors duration-300 ${
-                isScrolled ? "text-primary" : "text-white"
-              }`}
-            >
-              Mtseku Transport Services
-            </h1>
-          </div>
+    <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
+      <span className="scroll-progress" aria-hidden="true" />
+      <div className="nav-container">
+        <Link className="brand" to="/" aria-label={`${BUSINESS.name} home`}>
+          <span className="brand-mark">
+            <img
+              className="brand-mark-light"
+              src="/mtseku-mark-light.png"
+              alt=""
+              width="984"
+              height="376"
+              aria-hidden="true"
+            />
+            <img
+              className="brand-mark-color"
+              src="/mtseku-mark-color.png"
+              alt=""
+              width="984"
+              height="376"
+              aria-hidden="true"
+            />
+          </span>
+          <span className="brand-wordmark" aria-hidden="true">
+            <strong>MTSEKU</strong>
+            <small>Transport Services</small>
+          </span>
+        </Link>
 
-          {/* Desktop Nav (now only from lg and up) */}
-          <div className="hidden lg:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              {navItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`px-3 py-2 text-sm font-medium transition-colors duration-300 ${
-                    isScrolled
-                      ? "text-foreground hover:text-primary"
-                      : "text-white hover:text-accent"
-                  }`}
-                >
-                  {item.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* CTA (now only from lg and up) */}
-          <div className="hidden lg:block">
-            <a
-              href="https://wa.me/27788686706"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${
-                isScrolled ? "btn-primary" : "btn-outline"
-              } inline-block transition-all duration-300`}
+        <nav className="desktop-nav" aria-label="Primary navigation">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.href}
+              to={item.href}
+              end={item.href === "/"}
+              className={({ isActive }) => (isActive ? "is-active" : "")}
             >
-              Book Now
-            </a>
-          </div>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
 
-          {/* Mobile/Tablet menu button (shows below lg) */}
-          <div className="lg:hidden z-50">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md bg-black/60 text-white hover:bg黑/80 focus:outline-none focus:ring-2 focus:ring-accent"
-            >
-              {isMobileMenuOpen ? (
-                <motion.div
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                >
-                  <X size={24} />
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                >
-                  <Menu size={24} />
-                </motion.div>
-              )}
-            </motion.button>
-          </div>
-        </div>
+        <a
+          className="button button-accent nav-cta"
+          href={whatsappBookingUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <MessageCircle aria-hidden="true" />
+          Book on WhatsApp
+        </a>
 
-        {/* Mobile/Tablet Nav (shows below lg) */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="lg:hidden bg-white/95 backdrop-blur-lg rounded-lg shadow-lg mt-2 overflow-hidden"
-            >
-              <motion.div
-                className="px-2 pt-2 pb-3 space-y-1"
-                initial="closed"
-                animate="open"
-                variants={{
-                  open: {
-                    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-                  },
-                }}
-              >
-                {navItems.map((item) => (
-                  <motion.button
-                    key={item.name}
-                    onClick={() => scrollToSection(item.href)}
-                    variants={{
-                      closed: { opacity: 0, x: -20 },
-                      open: { opacity: 1, x: 0 },
-                    }}
-                    className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-secondary/50 rounded-md w-full text-left transition-colors duration-300"
-                  >
-                    {item.name}
-                  </motion.button>
-                ))}
-                <div className="px-3 py-2">
-                  <a
-                    href="https://wa.me/27788686706"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary w-full text-center block"
-                  >
-                    Book Now
-                  </a>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-expanded={isOpen}
+          aria-controls="mobile-menu"
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+          onClick={() => setIsOpen((current) => !current)}
+        >
+          {isOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
       </div>
-    </nav>
+
+      <div
+        id="mobile-menu"
+        className={`mobile-menu ${isOpen ? "is-open" : ""}`}
+        aria-hidden={!isOpen}
+      >
+        <nav aria-label="Mobile navigation">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.href}
+              to={item.href}
+              end={item.href === "/"}
+              className={({ isActive }) => (isActive ? "is-active" : "")}
+              onClick={() => setIsOpen(false)}
+            >
+              {item.label}
+            </NavLink>
+          ))}
+          <a
+            className="button button-accent"
+            href={whatsappBookingUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setIsOpen(false)}
+          >
+            <MessageCircle aria-hidden="true" />
+            Book on WhatsApp
+          </a>
+        </nav>
+      </div>
+    </header>
   );
 };
 
 export default Navbar;
-

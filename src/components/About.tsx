@@ -1,249 +1,135 @@
-import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  Target,
-  Eye,
-  Leaf,
-  HandHeart,
-  Scale,
-  Globe2,
   Building2,
+  Eye,
+  Globe2,
+  HandHeart,
+  Leaf,
+  Scale,
+  ShieldCheck,
+  Target,
 } from "lucide-react";
-import aboutImage from "@/assets/about-office.jpg";
+import Reveal from "@/components/Reveal";
+import aboutImage from "@/assets/gallery2.webp";
 
-gsap.registerPlugin(ScrollTrigger);
+const responsibilityPillars = [
+  {
+    icon: Building2,
+    title: "Community impact",
+    text: "We create local employment, support youth and skills development, and partner with organisations to promote road safety and community growth in Cape Town, Johannesburg and beyond.",
+  },
+  {
+    icon: Leaf,
+    title: "Environmental care",
+    text: "We operate a well-maintained, fuel-efficient fleet, promote digital systems to reduce waste, and explore greener transport options for a sustainable future.",
+  },
+  {
+    icon: HandHeart,
+    title: "Employee wellbeing",
+    text: "Our drivers and staff are the heart of our business. We support fair working conditions, ongoing training and equal opportunities for all.",
+  },
+  {
+    icon: Scale,
+    title: "Ethical conduct",
+    text: "Integrity and accountability guide our work. We comply with the Companies Act, CPA and transport laws, with zero tolerance for corruption or unethical practices.",
+  },
+  {
+    icon: Globe2,
+    title: "Building a better future",
+    text: "As we expand, we remain dedicated to empowering communities, operating responsibly and being a transport company that drives progress and purpose across South Africa and the SADC region.",
+  },
+] as const;
 
-const About = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const blocksRef = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Image reveal
-      gsap.fromTo(
-        imageRef.current,
-        { opacity: 0, x: -80, scale: 0.9 },
-        {
-          opacity: 1,
-          x: 0,
-          scale: 1,
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: { trigger: imageRef.current, start: "top 80%" },
-        }
-      );
-
-      // About content fade
-      gsap.fromTo(
-        contentRef.current?.children || [],
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power3.out",
-          scrollTrigger: { trigger: contentRef.current, start: "top 85%" },
-        }
-      );
-
-      // Responsibility cards animation
-      blocksRef.current.forEach((block, i) => {
-        gsap.fromTo(
-          block,
-          { opacity: 0, y: 80 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            delay: i * 0.08,
-            ease: "power3.out",
-            scrollTrigger: { trigger: block, start: "top 85%" },
-          }
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Unified brand gradient for all icons
-  const brandGradient = "from-blue-600 to-orange-500";
-
-  const pillars = [
-    {
-      icon: Building2,
-      title: "Community Impact",
-      text: [
-        "We create local employment, support youth and skills development, and partner with organisations to promote road safety and community growth in Cape Town, Johannesburg, and beyond.",
-      ],
-    },
-    {
-      icon: Leaf,
-      title: "Environmental  Care",
-      text: [
-        
-        "We operate a well-maintained, fuel-efficient fleet, promote digital systems to reduce waste, and explore greener transport options for a sustainable future.",
-
-      ],
-    },
-    {
-      icon: HandHeart,
-      title: "Employee Wellbeing",
-      text: [
-        
-"Our drivers and staff are the heart of our business. We ensure fair working conditions, ongoing training, and equal opportunities for all.",
-      ],
-    },
-    {
-      icon: Scale,
-      title: "Ethical Conduct",
-      text: [
-        "Integrity and accountability guide all we do. We comply with the Companies Act, CPA, and transport laws, maintaining a zero-tolerance approach to corruption or unethical practices.",
-      ],
-    },
-    {
-      icon: Globe2,
-      title: "Building a Better Future",
-      text: [
-        "As we continue to expand, we remain dedicated to empowering our communities through sustainable initiatives, operating responsibly and with respect for people and the planet, and being a transport company that drives both progress and purpose.",
-        "Mtseku Transport — driving progress, people, and purpose across South Africa",
-      ],
-    },
-  ];
-
-  return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="py-24 bg-gradient-to-b from-white to-blue-50 relative"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* ==== ABOUT INTRO (restored) ==== */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
-          {/* Image */}
-          <div ref={imageRef} className="relative">
-            <div className="overflow-hidden rounded-3xl shadow-2xl relative">
-              <img
-                src={aboutImage}
-                alt="Mtseku Transport Office and Team"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-orange-500/20" />
-            </div>
-            <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl p-6 shadow-xl">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">100%</div>
-                <div className="text-sm text-gray-600">Trusted Service</div>
-              </div>
+const About = () => (
+  <section id="about" className="section about-section">
+    <div className="page-container">
+      <div className="about-layout">
+        <Reveal className="about-visual">
+          <img
+            src={aboutImage}
+            alt="Mtseku shuttle vehicle serving a Cape Town scenic route"
+            width="1600"
+            height="1200"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="about-visual-card">
+            <ShieldCheck aria-hidden="true" />
+            <div>
+              <strong>Passenger safety first</strong>
+              <span>Maintained vehicles and liability insurance</span>
             </div>
           </div>
+        </Reveal>
 
-          {/* Text */}
-          <div ref={contentRef} className="space-y-8">
-            <h2 className="text-4xl lg:text-5xl font-display font-bold text-gray-900">
-              About <span className="text-orange-500">Mtseku Transport</span>
-            </h2>
+        <Reveal className="about-copy" delay={100}>
+          <p className="eyebrow">About Mtseku</p>
+          <h2>A South African transport company built on responsibility.</h2>
+          <p className="lead">
+            At Mtseku Transport Services, your journey is our priority. We are
+            founded on safety, reliability and excellence, with every trip
+            handled with care.
+          </p>
+          <p>
+            Our commitment to passenger safety goes beyond compliance, from
+            well-maintained vehicles and passenger liability insurance to
+            trained, professional drivers who put your wellbeing first.
+          </p>
+          <p>
+            We aim to be clear before pickup, attentive during travel and
+            accountable for the standards associated with the Mtseku name.
+            That principle guides how the team communicates, prepares and
+            represents the business.
+          </p>
 
-            <p className="text-lg text-gray-600 leading-relaxed">
-              At Mtseku Transport Services, your journey is our priority. We are
-              founded on the values of safety, reliability, and excellence,
-              ensuring that every ride is handled with the utmost care. Our
-              commitment to passenger safety goes beyond compliance — from
-              well-maintained vehicles and insured passenger liability to
-              trained, professional drivers who put your well-being first.
-            </p>
-
-            <p className="text-lg text-gray-600 leading-relaxed">
-              We specialize in premium shuttle services, private hire, and
-              luxury tours, offering seamless travel across Cape Town and
-              Johannesburg. Whether you’re heading to the airport, exploring
-              South Africa’s landmarks, or arranging corporate transfers, you
-              can trust us to deliver a safe, comfortable, and professional
-              experience every time. With Mtseku, you don’t just reach your
-              destination — you arrive with confidence.
-            </p>
-
-            {/* Vision & Mission */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow border border-gray-100">
-                <div className="flex items-center gap-3 mb-3">
-                  <Eye className="h-6 w-6 text-blue-600" />
-                  <h3 className="font-semibold text-gray-900 text-xl">Vision</h3>
-                </div>
-                <p className="text-gray-600">
+          <div className="mission-grid">
+            <article>
+              <Eye aria-hidden="true" />
+              <div>
+                <h3>Our vision</h3>
+                <p>
                   To be South Africa&apos;s most trusted and ethical transport
                   partner.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow border border-gray-100">
-                <div className="flex items-center gap-3 mb-3">
-                  <Target className="h-6 w-6 text-orange-500" />
-                  <h3 className="font-semibold text-gray-900 text-xl">
-                    Mission
-                  </h3>
-                </div>
-                <p className="text-gray-600">
-                  Deliver personalized, safe, and seamless transport services
+            </article>
+            <article>
+              <Target aria-hidden="true" />
+              <div>
+                <h3>Our mission</h3>
+                <p>
+                  Deliver personalised, safe and seamless transport services
                   across South Africa.
                 </p>
               </div>
-            </div>
+            </article>
           </div>
-        </div>
-
-        {/* ==== OUR SOCIAL RESPONSIBILITY (unified color) ==== */}
-        <div className="space-y-24">
-          <div className="text-center mb-12">
-            <h3 className="text-4xl font-display font-bold text-gray-900 mb-4">
-               Our{" "}
-              <span className="text-orange-500">Social Responsibility</span>
-            </h3>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Our responsibility extends beyond transport — we’re committed to
-              driving progress for our communities, our people, and our planet.
-            </p>
-          </div>
-
-          {pillars.map((pillar, i) => (
-            <div
-              key={i}
-              ref={(el) => el && (blocksRef.current[i] = el)}
-              className={`flex flex-col lg:flex-row ${
-                i % 2 !== 0 ? "lg:flex-row-reverse" : ""
-              } items-center gap-12`}
-            >
-              {/* Icon (consistent gradient brand color) */}
-              <div
-                className={`flex-shrink-0 w-28 h-28 rounded-3xl bg-gradient-to-br ${brandGradient} flex items-center justify-center shadow-lg`}
-              >
-                <pillar.icon className="h-14 w-14 text-white" />
-              </div>
-
-              {/* Text */}
-              <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-2xl transition-all duration-500">
-                <h4 className="text-2xl font-semibold text-gray-900 mb-3">
-                  {pillar.title}
-                </h4>
-                {pillar.text.map((p, j) => (
-                  <p
-                    key={j}
-                    className="text-gray-600 text-base leading-relaxed mb-2"
-                  >
-                    {p}
-                  </p>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-        {/* ==== /OUR SOCIAL RESPONSIBILITY ==== */}
+        </Reveal>
       </div>
-    </section>
-  );
-};
+
+      <Reveal className="responsibility-heading">
+        <p className="eyebrow">Responsible growth</p>
+        <h2>Progress for people, communities and the road ahead.</h2>
+        <p>
+          Our responsibility extends beyond transport. It shapes how we care
+          for passengers, employees, communities and the environment.
+        </p>
+      </Reveal>
+
+      <div className="responsibility-grid">
+        {responsibilityPillars.map((pillar, index) => (
+          <Reveal
+            key={pillar.title}
+            className="responsibility-card"
+            delay={(index % 3) * 70}
+          >
+            <pillar.icon aria-hidden="true" />
+            <h3>{pillar.title}</h3>
+            <p>{pillar.text}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
 export default About;
