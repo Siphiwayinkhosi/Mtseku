@@ -16,6 +16,8 @@ The booking email endpoint is a Vercel Function at `/api/booking`. Use
 
 The booking form sends through Gmail SMTP from the server. It does not expose
 the Gmail credential in the browser and does not use FormSubmit.
+The booking recipient and internal inbox copy are sent as separate messages
+because Gmail can suppress a CC when the sender and CC address are identical.
 
 Add these environment variables to the Vercel project:
 

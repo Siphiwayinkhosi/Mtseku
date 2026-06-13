@@ -219,6 +219,9 @@ export default async function handler(request: ApiRequest, response: ApiResponse
 
   try {
     const email = buildEmail(data);
+    const bookingRecipient =
+      process.env.BOOKING_EMAIL_TO || DEFAULT_RECIPIENT;
+    const copyRecipient = process.env.BOOKING_EMAIL_CC || DEFAULT_CC;
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -232,18 +235,35 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       socketTimeout: 15_000,
     });
 
-    await transporter.sendMail({
-      from: {
-        name: "Mtseku Website",
-        address: gmailUser,
-      },
-      to: process.env.BOOKING_EMAIL_TO || DEFAULT_RECIPIENT,
-      cc: process.env.BOOKING_EMAIL_CC || DEFAULT_CC,
-      replyTo: data.email,
-      subject: email.subject,
-      text: email.text,
-      html: email.html,
-    });
+    const from = {
+      name: "Mtseku Website",
+      address: gmailUser,
+    };
+
+    await Promise.all([
+      transporter.sendMail({
+        from,
+        to: bookingRecipient,
+        replyTo: data.email,
+        subject: email.subject,
+        text: email.text,
+        html: email.html,
+      }),
+      transporter.sendMail({
+        from,
+        to: copyRecipient,
+        replyTo: data.email,
+        subject: `[Booking copy] ${email.subject}`,
+        text: `This is your inbox copy of the booking request sent to ${bookingRecipient}.\n\n${email.text}`,
+        html: `
+          <p style="font-family:Arial,sans-serif;color:#344257;">
+            This is your inbox copy of the booking request sent to
+            <strong>${escapeHtml(bookingRecipient)}</strong>.
+          </p>
+          ${email.html}
+        `,
+      }),
+    ]);
   } catch (providerError) {
     console.error("Gmail SMTP booking delivery failed:", providerError);
     return response.status(502).json({
