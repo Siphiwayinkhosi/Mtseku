@@ -14,23 +14,27 @@ The booking email endpoint is a Vercel Function at `/api/booking`. Use
 
 ## Booking email setup
 
-The booking form sends through Resend from the server. It does not expose an
-email API key in the browser and does not use FormSubmit.
+The booking form sends through Gmail SMTP from the server. It does not expose
+the Gmail credential in the browser and does not use FormSubmit.
 
 Add these environment variables to the Vercel project:
 
 ```text
-RESEND_API_KEY
-BOOKING_EMAIL_FROM
+GMAIL_USER
+GMAIL_APP_PASSWORD
 BOOKING_EMAIL_TO
 BOOKING_EMAIL_CC
 VITE_SITE_URL
 ```
 
-`BOOKING_EMAIL_FROM` must use a domain verified in Resend. The defaults in the
+`GMAIL_APP_PASSWORD` must be a Google App Password created after enabling
+2-Step Verification. Do not use the normal Gmail password. The defaults in the
 code send to `Tony.Noyila@outlook.com` and CC
-`siphiwayinkhosi.mahlalela9646@gmail.com`, but setting both variables explicitly
-in Vercel is recommended.
+`siphiwayinkhosi.mahlalela9646@gmail.com`, but setting both variables
+explicitly in Vercel is recommended.
+
+Once a custom domain is available, this SMTP delivery can be replaced with
+Resend and a verified domain sender.
 
 ## Production
 

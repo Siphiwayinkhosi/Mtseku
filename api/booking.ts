@@ -1,4 +1,5 @@
-const RESEND_API_URL = "https://api.resend.com/emails";
+import nodemailer from "nodemailer";
+
 const DEFAULT_RECIPIENT = "Tony.Noyila@outlook.com";
 const DEFAULT_CC = "siphiwayinkhosi.mahlalela9646@gmail.com";
 
@@ -203,11 +204,13 @@ export default async function handler(request: ApiRequest, response: ApiResponse
     return response.status(200).json({ ok: true });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.BOOKING_EMAIL_FROM;
+  const gmailUser = process.env.GMAIL_USER?.trim();
+  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
 
-  if (!apiKey || !from) {
-    console.error("Booking email is missing RESEND_API_KEY or BOOKING_EMAIL_FROM.");
+  if (!gmailUser || !gmailAppPassword) {
+    console.error(
+      "Booking email is missing GMAIL_USER or GMAIL_APP_PASSWORD.",
+    );
     return response.status(503).json({
       error:
         "Email delivery is temporarily unavailable. Please use WhatsApp or call the team.",
@@ -216,33 +219,33 @@ export default async function handler(request: ApiRequest, response: ApiResponse
 
   try {
     const email = buildEmail(data);
-    const providerResponse = await fetch(RESEND_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: gmailUser,
+        pass: gmailAppPassword,
       },
-      body: JSON.stringify({
-        from,
-        to: [process.env.BOOKING_EMAIL_TO || DEFAULT_RECIPIENT],
-        cc: [process.env.BOOKING_EMAIL_CC || DEFAULT_CC],
-        reply_to: data.email,
-        subject: email.subject,
-        text: email.text,
-        html: email.html,
-      }),
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
     });
 
-    if (!providerResponse.ok) {
-      const providerError = await providerResponse.text();
-      console.error("Resend rejected a booking email:", providerError);
-      return response.status(502).json({
-        error:
-          "We could not send your request right now. Please try again or use WhatsApp.",
-      });
-    }
+    await transporter.sendMail({
+      from: {
+        name: "Mtseku Website",
+        address: gmailUser,
+      },
+      to: process.env.BOOKING_EMAIL_TO || DEFAULT_RECIPIENT,
+      cc: process.env.BOOKING_EMAIL_CC || DEFAULT_CC,
+      replyTo: data.email,
+      subject: email.subject,
+      text: email.text,
+      html: email.html,
+    });
   } catch (providerError) {
-    console.error("Booking email delivery failed:", providerError);
+    console.error("Gmail SMTP booking delivery failed:", providerError);
     return response.status(502).json({
       error:
         "We could not send your request right now. Please try again or use WhatsApp.",
