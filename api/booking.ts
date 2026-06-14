@@ -240,7 +240,7 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       address: gmailUser,
     };
 
-    await transporter.sendMail({
+    const delivery = await transporter.sendMail({
       from,
       to: bookingRecipient,
       cc:
@@ -253,11 +253,44 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       html: email.html,
     });
 
+    const acceptedRecipients = delivery.accepted.map(String);
+    const rejectedRecipients = delivery.rejected.map(String);
+    const recipientAccepted = acceptedRecipients.some(
+      (recipient) =>
+        recipient.toLowerCase() === bookingRecipient.toLowerCase(),
+    );
+
+    console.info("Gmail booking delivery result", {
+      messageId: delivery.messageId,
+      accepted: acceptedRecipients,
+      rejected: rejectedRecipients,
+      response: delivery.response,
+    });
+
+    if (!recipientAccepted) {
+      console.error("Gmail did not accept the booking recipient.", {
+        bookingRecipient,
+        accepted: acceptedRecipients,
+        rejected: rejectedRecipients,
+        response: delivery.response,
+      });
+      return response.status(502).json({
+        error:
+          "The booking email was not accepted for delivery. Please use WhatsApp or call the team.",
+      });
+    }
+
     if (copyRecipient.toLowerCase() === gmailUser.toLowerCase()) {
       console.warn(
         "BOOKING_EMAIL_CC matches GMAIL_USER; Gmail suppresses self-delivery. Use a different sender account to receive an Inbox copy.",
       );
     }
+
+    return response.status(200).json({
+      ok: true,
+      reference: delivery.messageId,
+      smtpResponse: delivery.response,
+    });
   } catch (providerError) {
     console.error("Gmail booking delivery failed:", providerError);
     return response.status(502).json({
@@ -265,6 +298,4 @@ export default async function handler(request: ApiRequest, response: ApiResponse
         "We could not send your request right now. Please try again or use WhatsApp.",
     });
   }
-
-  return response.status(200).json({ ok: true });
 }
