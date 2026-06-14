@@ -38,6 +38,25 @@ type BookingPayload = {
   company: string;
 };
 
+class DeliveryProviderError extends Error {
+  provider: "brevo" | "gmail";
+  code: string;
+  status?: number;
+
+  constructor(
+    provider: "brevo" | "gmail",
+    code: string,
+    message: string,
+    status?: number,
+  ) {
+    super(message);
+    this.name = "DeliveryProviderError";
+    this.provider = provider;
+    this.code = code;
+    this.status = status;
+  }
+}
+
 const escapeHtml = (value: string) =>
   value
     .replaceAll("&", "&amp;")
@@ -197,36 +216,50 @@ const sendWithBrevo = async (
   }
 
   if (!apiKey || !senderEmail) {
-    throw new Error(
+    throw new DeliveryProviderError(
+      "brevo",
+      "configuration_incomplete",
       "Brevo configuration is incomplete. Set both BREVO_API_KEY and BREVO_SENDER_EMAIL.",
     );
   }
 
   const email = buildEmail(booking);
-  const providerResponse = await fetch(BREVO_API_URL, {
-    method: "POST",
-    signal: AbortSignal.timeout(10_000),
-    headers: {
-      accept: "application/json",
-      "api-key": apiKey,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      sender: {
-        name: "Mtseku Website",
-        email: senderEmail,
+  let providerResponse: Response;
+
+  try {
+    providerResponse = await fetch(BREVO_API_URL, {
+      method: "POST",
+      signal: AbortSignal.timeout(10_000),
+      headers: {
+        accept: "application/json",
+        "api-key": apiKey,
+        "content-type": "application/json",
       },
-      to: [{ email: bookingRecipient }],
-      cc: copyRecipient ? [{ email: copyRecipient }] : undefined,
-      replyTo: {
-        email: booking.email,
-        name: booking.name,
-      },
-      subject: email.subject,
-      textContent: email.text,
-      htmlContent: email.html,
-    }),
-  });
+      body: JSON.stringify({
+        sender: {
+          name: "Mtseku Website",
+          email: senderEmail,
+        },
+        to: [{ email: bookingRecipient }],
+        cc: copyRecipient ? [{ email: copyRecipient }] : undefined,
+        replyTo: {
+          email: booking.email,
+          name: booking.name,
+        },
+        subject: email.subject,
+        textContent: email.text,
+        htmlContent: email.html,
+      }),
+    });
+  } catch (error) {
+    throw new DeliveryProviderError(
+      "brevo",
+      error instanceof DOMException && error.name === "TimeoutError"
+        ? "request_timeout"
+        : "request_failed",
+      error instanceof Error ? error.message : "Brevo request failed.",
+    );
+  }
 
   const providerBody = (await providerResponse.json().catch(() => ({}))) as {
     messageId?: string;
@@ -240,8 +273,11 @@ const sendWithBrevo = async (
       code: providerBody.code,
       message: providerBody.message,
     });
-    throw new Error(
+    throw new DeliveryProviderError(
+      "brevo",
+      providerBody.code || `http_${providerResponse.status}`,
       providerBody.message || "Brevo did not accept the booking email.",
+      providerResponse.status,
     );
   }
 
@@ -267,7 +303,9 @@ const sendWithGmail = async (
   const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
 
   if (!gmailUser || !gmailAppPassword) {
-    throw new Error(
+    throw new DeliveryProviderError(
+      "gmail",
+      "configuration_incomplete",
       "Booking email is missing BREVO_API_KEY/BREVO_SENDER_EMAIL and Gmail fallback credentials.",
     );
   }
@@ -316,7 +354,11 @@ const sendWithGmail = async (
   });
 
   if (!recipientAccepted) {
-    throw new Error("Gmail did not accept the booking recipient.");
+    throw new DeliveryProviderError(
+      "gmail",
+      "recipient_rejected",
+      "Gmail did not accept the booking recipient.",
+    );
   }
 
   return {
@@ -364,6 +406,30 @@ export default async function handler(request: ApiRequest, response: ApiResponse
     });
   } catch (providerError) {
     console.error("Booking email delivery failed:", providerError);
+
+    if (providerError instanceof DeliveryProviderError) {
+      const error =
+        providerError.provider === "brevo"
+          ? providerError.code === "configuration_incomplete"
+            ? "Brevo is not fully configured. Add both BREVO_API_KEY and BREVO_SENDER_EMAIL in Vercel."
+            : providerError.status === 401 || providerError.status === 403
+              ? "Brevo rejected the API key. Replace BREVO_API_KEY in Vercel with an active Brevo API key."
+              : providerError.status === 400 &&
+                  /sender|from/i.test(providerError.message)
+                ? "Brevo rejected the sender. Verify BREVO_SENDER_EMAIL in your Brevo account."
+                : providerError.status === 429
+                  ? "Brevo has temporarily rate-limited email delivery. Please try again shortly."
+                  : "Brevo rejected the booking email. Check the Brevo Transactional Logs and sender status."
+          : "Gmail could not send the booking email. Check the Gmail App Password configuration.";
+
+      return response.status(502).json({
+        error,
+        deliveryProvider: providerError.provider,
+        deliveryCode: providerError.code,
+        deliveryStatus: providerError.status,
+      });
+    }
+
     return response.status(502).json({
       error:
         "We could not send your request right now. Please try again or use WhatsApp.",
