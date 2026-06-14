@@ -1,6 +1,4 @@
-import { ImapFlow } from "imapflow";
 import nodemailer from "nodemailer";
-import MailComposer from "nodemailer/lib/mail-composer";
 
 const DEFAULT_RECIPIENT = "Tony.Noyila@outlook.com";
 const DEFAULT_CC = "siphiwayinkhosi.mahlalela9646@gmail.com";
@@ -242,53 +240,24 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       address: gmailUser,
     };
 
-    const inboxCopy = await new MailComposer({
-      from,
-      to: copyRecipient,
-      replyTo: data.email,
-      subject: `[Booking copy] ${email.subject}`,
-      text: `This is your internal copy of a new Mtseku website booking request.\n\n${email.text}`,
-      html: `
-        <p style="font-family:Arial,sans-serif;color:#344257;">
-          This is your internal copy of a new Mtseku website booking request.
-        </p>
-        ${email.html}
-      `,
-    })
-      .compile()
-      .build();
-
-    const imapClient = new ImapFlow({
-      host: "imap.gmail.com",
-      port: 993,
-      secure: true,
-      auth: {
-        user: gmailUser,
-        pass: gmailAppPassword,
-      },
-      logger: false,
-      connectionTimeout: 10_000,
-      greetingTimeout: 10_000,
-      socketTimeout: 15_000,
-    });
-
-    try {
-      await imapClient.connect();
-      await imapClient.append("INBOX", inboxCopy);
-    } finally {
-      if (imapClient.usable) {
-        await imapClient.logout();
-      }
-    }
-
     await transporter.sendMail({
       from,
       to: bookingRecipient,
+      cc:
+        copyRecipient.toLowerCase() === gmailUser.toLowerCase()
+          ? undefined
+          : copyRecipient,
       replyTo: data.email,
       subject: email.subject,
       text: email.text,
       html: email.html,
     });
+
+    if (copyRecipient.toLowerCase() === gmailUser.toLowerCase()) {
+      console.warn(
+        "BOOKING_EMAIL_CC matches GMAIL_USER; Gmail suppresses self-delivery. Use a different sender account to receive an Inbox copy.",
+      );
+    }
   } catch (providerError) {
     console.error("Gmail booking delivery failed:", providerError);
     return response.status(502).json({
