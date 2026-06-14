@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 
 const DEFAULT_RECIPIENT = "Tony.Noyila@outlook.com";
 const DEFAULT_CC = "siphiwayinkhosi.mahlalela9646@gmail.com";
+const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
 const serviceOptions = new Set([
   "Shuttle Services",
@@ -183,6 +184,148 @@ const buildEmail = (booking: BookingPayload) => {
   };
 };
 
+const sendWithBrevo = async (
+  booking: BookingPayload,
+  bookingRecipient: string,
+  copyRecipient: string,
+) => {
+  const apiKey = process.env.BREVO_API_KEY?.trim();
+  const senderEmail = process.env.BREVO_SENDER_EMAIL?.trim();
+
+  if (!apiKey && !senderEmail) {
+    return null;
+  }
+
+  if (!apiKey || !senderEmail) {
+    throw new Error(
+      "Brevo configuration is incomplete. Set both BREVO_API_KEY and BREVO_SENDER_EMAIL.",
+    );
+  }
+
+  const email = buildEmail(booking);
+  const providerResponse = await fetch(BREVO_API_URL, {
+    method: "POST",
+    signal: AbortSignal.timeout(10_000),
+    headers: {
+      accept: "application/json",
+      "api-key": apiKey,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: {
+        name: "Mtseku Website",
+        email: senderEmail,
+      },
+      to: [{ email: bookingRecipient }],
+      cc: copyRecipient ? [{ email: copyRecipient }] : undefined,
+      replyTo: {
+        email: booking.email,
+        name: booking.name,
+      },
+      subject: email.subject,
+      textContent: email.text,
+      htmlContent: email.html,
+    }),
+  });
+
+  const providerBody = (await providerResponse.json().catch(() => ({}))) as {
+    messageId?: string;
+    message?: string;
+    code?: string;
+  };
+
+  if (!providerResponse.ok || !providerBody.messageId) {
+    console.error("Brevo rejected a booking email.", {
+      status: providerResponse.status,
+      code: providerBody.code,
+      message: providerBody.message,
+    });
+    throw new Error(
+      providerBody.message || "Brevo did not accept the booking email.",
+    );
+  }
+
+  console.info("Brevo booking delivery accepted", {
+    messageId: providerBody.messageId,
+    to: bookingRecipient,
+    cc: copyRecipient,
+  });
+
+  return {
+    provider: "brevo",
+    reference: providerBody.messageId,
+    status: "accepted",
+  };
+};
+
+const sendWithGmail = async (
+  booking: BookingPayload,
+  bookingRecipient: string,
+  copyRecipient: string,
+) => {
+  const gmailUser = process.env.GMAIL_USER?.trim();
+  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
+
+  if (!gmailUser || !gmailAppPassword) {
+    throw new Error(
+      "Booking email is missing BREVO_API_KEY/BREVO_SENDER_EMAIL and Gmail fallback credentials.",
+    );
+  }
+
+  const email = buildEmail(booking);
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: gmailUser,
+      pass: gmailAppPassword,
+    },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
+  });
+  const from = {
+    name: "Mtseku Website",
+    address: gmailUser,
+  };
+  const delivery = await transporter.sendMail({
+    from,
+    to: bookingRecipient,
+    cc:
+      copyRecipient.toLowerCase() === gmailUser.toLowerCase()
+        ? undefined
+        : copyRecipient,
+    replyTo: booking.email,
+    subject: email.subject,
+    text: email.text,
+    html: email.html,
+  });
+  const acceptedRecipients = (delivery.accepted || []).map(String);
+  const rejectedRecipients = (delivery.rejected || []).map(String);
+  const recipientAccepted = acceptedRecipients.some(
+    (recipient) =>
+      recipient.toLowerCase() === bookingRecipient.toLowerCase(),
+  );
+
+  console.info("Gmail booking delivery result", {
+    messageId: delivery.messageId,
+    accepted: acceptedRecipients,
+    rejected: rejectedRecipients,
+    response: delivery.response,
+  });
+
+  if (!recipientAccepted) {
+    throw new Error("Gmail did not accept the booking recipient.");
+  }
+
+  return {
+    provider: "gmail",
+    reference: delivery.messageId,
+    status: delivery.response,
+  };
+};
+
 export default async function handler(request: ApiRequest, response: ApiResponse) {
   response.setHeader("Cache-Control", "no-store");
 
@@ -204,95 +347,23 @@ export default async function handler(request: ApiRequest, response: ApiResponse
     return response.status(200).json({ ok: true });
   }
 
-  const gmailUser = process.env.GMAIL_USER?.trim();
-  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
-
-  if (!gmailUser || !gmailAppPassword) {
-    console.error(
-      "Booking email is missing GMAIL_USER or GMAIL_APP_PASSWORD.",
-    );
-    return response.status(503).json({
-      error:
-        "Email delivery is temporarily unavailable. Please use WhatsApp or call the team.",
-    });
-  }
-
   try {
-    const email = buildEmail(data);
     const bookingRecipient =
-      process.env.BOOKING_EMAIL_TO || DEFAULT_RECIPIENT;
-    const copyRecipient = process.env.BOOKING_EMAIL_CC || DEFAULT_CC;
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: gmailUser,
-        pass: gmailAppPassword,
-      },
-      connectionTimeout: 10_000,
-      greetingTimeout: 10_000,
-      socketTimeout: 15_000,
-    });
-
-    const from = {
-      name: "Mtseku Website",
-      address: gmailUser,
-    };
-
-    const delivery = await transporter.sendMail({
-      from,
-      to: bookingRecipient,
-      cc:
-        copyRecipient.toLowerCase() === gmailUser.toLowerCase()
-          ? undefined
-          : copyRecipient,
-      replyTo: data.email,
-      subject: email.subject,
-      text: email.text,
-      html: email.html,
-    });
-
-    const acceptedRecipients = delivery.accepted.map(String);
-    const rejectedRecipients = delivery.rejected.map(String);
-    const recipientAccepted = acceptedRecipients.some(
-      (recipient) =>
-        recipient.toLowerCase() === bookingRecipient.toLowerCase(),
-    );
-
-    console.info("Gmail booking delivery result", {
-      messageId: delivery.messageId,
-      accepted: acceptedRecipients,
-      rejected: rejectedRecipients,
-      response: delivery.response,
-    });
-
-    if (!recipientAccepted) {
-      console.error("Gmail did not accept the booking recipient.", {
-        bookingRecipient,
-        accepted: acceptedRecipients,
-        rejected: rejectedRecipients,
-        response: delivery.response,
-      });
-      return response.status(502).json({
-        error:
-          "The booking email was not accepted for delivery. Please use WhatsApp or call the team.",
-      });
-    }
-
-    if (copyRecipient.toLowerCase() === gmailUser.toLowerCase()) {
-      console.warn(
-        "BOOKING_EMAIL_CC matches GMAIL_USER; Gmail suppresses self-delivery. Use a different sender account to receive an Inbox copy.",
-      );
-    }
+      process.env.BOOKING_EMAIL_TO?.trim() || DEFAULT_RECIPIENT;
+    const copyRecipient =
+      process.env.BOOKING_EMAIL_CC?.trim() || DEFAULT_CC;
+    const delivery =
+      (await sendWithBrevo(data, bookingRecipient, copyRecipient)) ||
+      (await sendWithGmail(data, bookingRecipient, copyRecipient));
 
     return response.status(200).json({
       ok: true,
-      reference: delivery.messageId,
-      smtpResponse: delivery.response,
+      provider: delivery.provider,
+      reference: delivery.reference,
+      deliveryStatus: delivery.status,
     });
   } catch (providerError) {
-    console.error("Gmail booking delivery failed:", providerError);
+    console.error("Booking email delivery failed:", providerError);
     return response.status(502).json({
       error:
         "We could not send your request right now. Please try again or use WhatsApp.",
