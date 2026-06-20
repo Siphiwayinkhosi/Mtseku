@@ -21,6 +21,12 @@ Set the public Vite environment variable:
 VITE_CONTACT_API_URL=https://your-aws-api-gateway-url.example/contact
 ```
 
+For the current AWS API Gateway endpoint:
+
+```text
+VITE_CONTACT_API_URL=https://mq2379zr3l.execute-api.af-south-1.amazonaws.com/default/mtseku-contact-form
+```
+
 API contract:
 
 ```http
@@ -32,17 +38,16 @@ Request body:
 
 ```json
 {
-  "formType": "transport-enquiry",
   "name": "Customer name",
   "email": "customer@example.com",
   "phone": "+27...",
   "serviceType": "Airport Transfer",
   "pickupLocation": "Pickup address or area",
   "dropoffLocation": "Drop-off address or area",
-  "preferredDate": "2026-06-20",
-  "preferredTime": "10:30",
-  "numberOfPassengers": 2,
-  "message": "Transport enquiry details"
+  "preferredDateTime": "2026-06-20 10:30",
+  "passengers": "2",
+  "message": "Transport enquiry details",
+  "honeypot": ""
 }
 ```
 

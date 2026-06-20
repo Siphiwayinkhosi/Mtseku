@@ -59,6 +59,12 @@ const getFormValue = (formData: FormData, name: string) =>
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type ContactApiResponse = {
+  success?: boolean;
+  message?: string;
+  error?: string;
+};
+
 const Booking = () => {
   const [status, setStatus] = useState<SubmissionStatus>("idle");
   const [statusMessage, setStatusMessage] = useState("");
@@ -73,16 +79,6 @@ const Booking = () => {
     const phone = getFormValue(formData, "phone");
     const serviceType = getFormValue(formData, "serviceType");
     const message = getFormValue(formData, "message");
-    const company = getFormValue(formData, "company");
-
-    if (company) {
-      form.reset();
-      setStatus("success");
-      setStatusMessage(
-        "Thank you. Your request has been received. Mtseku Transport Services will contact you shortly.",
-      );
-      return;
-    }
 
     if (!name) {
       setStatus("error");
@@ -116,6 +112,28 @@ const Booking = () => {
       return;
     }
 
+    const preferredDate = getFormValue(formData, "preferredDate");
+    const preferredTime = getFormValue(formData, "preferredTime");
+    const preferredDateTime = [preferredDate, preferredTime]
+      .filter(Boolean)
+      .join(" ");
+
+    const payload = {
+      name,
+      email,
+      phone,
+      serviceType,
+      pickupLocation: getFormValue(formData, "pickupLocation"),
+      dropoffLocation: getFormValue(formData, "dropoffLocation"),
+      preferredDateTime,
+      passengers: getFormValue(formData, "passengers") || "1",
+      message,
+      honeypot: "",
+    };
+
+    console.log("[Mtseku booking] API URL configured:", Boolean(CONTACT_API_URL));
+    console.log("[Mtseku booking] Payload being sent:", payload);
+
     if (!CONTACT_API_URL) {
       setStatus("error");
       setStatusMessage(
@@ -123,22 +141,6 @@ const Booking = () => {
       );
       return;
     }
-
-    const payload = {
-      formType: "transport-enquiry",
-      name,
-      email,
-      phone,
-      serviceType,
-      pickupLocation: getFormValue(formData, "pickupLocation"),
-      dropoffLocation: getFormValue(formData, "dropoffLocation"),
-      preferredDate: getFormValue(formData, "preferredDate"),
-      preferredTime: getFormValue(formData, "preferredTime"),
-      numberOfPassengers: Number(
-        getFormValue(formData, "numberOfPassengers") || 1,
-      ),
-      message,
-    };
 
     setStatus("submitting");
     setStatusMessage("Sending your transport request...");
@@ -149,13 +151,25 @@ const Booking = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json().catch(() => ({}))) as {
-        success?: boolean;
-        error?: string;
-      };
+      const responseText = await response.text();
+      let result: ContactApiResponse = {};
+
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        result = {};
+      }
+
+      console.log("[Mtseku booking] API response status:", response.status);
+      console.log(
+        "[Mtseku booking] API response body:",
+        responseText ? result : "",
+      );
 
       if (!response.ok || result.success !== true) {
-        throw new Error(result.error || "Your request could not be sent.");
+        throw new Error(
+          result.message || result.error || "Your request could not be sent.",
+        );
       }
 
       form.reset();
@@ -202,12 +216,14 @@ const Booking = () => {
               aria-busy={status === "submitting"}
             >
               <label className="form-honeypot" aria-hidden="true">
-                <span>Company website</span>
+                <span>Leave this field empty</span>
                 <input
                   type="text"
-                  name="company"
+                  name="honeypot"
                   tabIndex={-1}
                   autoComplete="off"
+                  value=""
+                  readOnly
                 />
               </label>
 
@@ -242,7 +258,7 @@ const Booking = () => {
               </label>
               <label>
                 <span>Number of passengers</span>
-                <select name="numberOfPassengers" defaultValue="1">
+                <select name="passengers" defaultValue="1">
                   {Array.from({ length: 20 }, (_, index) => index + 1).map(
                     (passengers) => (
                       <option key={passengers} value={passengers}>
