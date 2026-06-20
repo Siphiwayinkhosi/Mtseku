@@ -9,34 +9,51 @@ npm install
 npm run dev
 ```
 
-The booking email endpoint is a Vercel Function at `/api/booking`. Use
-`vercel dev` when testing that endpoint locally.
+The booking/contact form is frontend-only and posts to a configurable API
+endpoint. This project is prepared for an AWS API Gateway/Lambda endpoint, but
+does not include the Lambda backend yet.
 
-## Booking email setup
+## Contact form API setup
 
-The booking form sends through Brevo's transactional email API from the
-server. Brevo allows a sender email to be verified by email while the custom
-domain is not yet available. Gmail SMTP remains a temporary fallback.
-
-Add these environment variables to the Vercel project:
+Set the public Vite environment variable:
 
 ```text
-BREVO_API_KEY
-BREVO_SENDER_EMAIL
-GMAIL_USER
-GMAIL_APP_PASSWORD
-BOOKING_EMAIL_TO
-BOOKING_EMAIL_CC
-VITE_SITE_URL
+VITE_CONTACT_API_URL=https://your-aws-api-gateway-url.example/contact
 ```
 
-Create and verify `BREVO_SENDER_EMAIL` in Brevo, then create an API key and add
-it as `BREVO_API_KEY`. The defaults in the code send to
-`Tony.Noyila@outlook.com` and CC
-`siphiwayinkhosi.mahlalela9646@gmail.com`.
+API contract:
 
-Once a custom domain is available, this temporary delivery setup can be
-replaced with Resend and a verified domain sender.
+```http
+POST {VITE_CONTACT_API_URL}
+Content-Type: application/json
+```
+
+Request body:
+
+```json
+{
+  "formType": "transport-enquiry",
+  "name": "Customer name",
+  "email": "customer@example.com",
+  "phone": "+27...",
+  "serviceType": "Airport Transfer",
+  "pickupLocation": "Pickup address or area",
+  "dropoffLocation": "Drop-off address or area",
+  "preferredDate": "2026-06-20",
+  "preferredTime": "10:30",
+  "numberOfPassengers": 2,
+  "message": "Transport enquiry details"
+}
+```
+
+Expected success response:
+
+```json
+{ "success": true }
+```
+
+If `VITE_CONTACT_API_URL` is missing, the form shows a clear user-facing error
+and does not submit.
 
 ## Production
 

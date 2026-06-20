@@ -8,8 +8,8 @@ export const BUSINESS = {
   phoneDisplay: "+27 78 868 6706",
   phoneHref: "tel:+27788686706",
   whatsapp: "https://wa.me/27788686706",
-  email: "Tony.Noyila@outlook.com",
-  emailHref: "mailto:Tony.Noyila@outlook.com",
+  email: "info@mstekutransport.co.za",
+  emailHref: "mailto:info@mstekutransport.co.za",
   addresses: [
     {
       city: "Johannesburg",

@@ -12,6 +12,8 @@ import { FormEvent, useState } from "react";
 import Reveal from "@/components/Reveal";
 import { BUSINESS, whatsappBookingUrl } from "@/lib/site";
 
+const CONTACT_API_URL = import.meta.env.VITE_CONTACT_API_URL?.trim();
+
 const serviceOptions = [
   "Shuttle Services",
   "Tours & Sightseeing",
@@ -52,6 +54,11 @@ const getLocalDate = () => {
 
 type SubmissionStatus = "idle" | "submitting" | "success" | "error";
 
+const getFormValue = (formData: FormData, name: string) =>
+  String(formData.get(name) || "").trim();
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const Booking = () => {
   const [status, setStatus] = useState<SubmissionStatus>("idle");
   const [statusMessage, setStatusMessage] = useState("");
@@ -61,30 +68,100 @@ const Booking = () => {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
+    const name = getFormValue(formData, "name");
+    const email = getFormValue(formData, "email").toLowerCase();
+    const phone = getFormValue(formData, "phone");
+    const serviceType = getFormValue(formData, "serviceType");
+    const message = getFormValue(formData, "message");
+    const company = getFormValue(formData, "company");
+
+    if (company) {
+      form.reset();
+      setStatus("success");
+      setStatusMessage(
+        "Thank you. Your request has been received. Mtseku Transport Services will contact you shortly.",
+      );
+      return;
+    }
+
+    if (!name) {
+      setStatus("error");
+      setStatusMessage("Please enter your full name.");
+      return;
+    }
+
+    if (!email && !phone) {
+      setStatus("error");
+      setStatusMessage("Please enter either an email address or phone number.");
+      return;
+    }
+
+    if (email && !emailPattern.test(email)) {
+      setStatus("error");
+      setStatusMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (!serviceType) {
+      setStatus("error");
+      setStatusMessage("Please select a service type.");
+      return;
+    }
+
+    if (!message) {
+      setStatus("error");
+      setStatusMessage(
+        "Please add a short message about your transport request.",
+      );
+      return;
+    }
+
+    if (!CONTACT_API_URL) {
+      setStatus("error");
+      setStatusMessage(
+        "Online enquiries are temporarily unavailable. Please use WhatsApp or call Mtseku Transport Services.",
+      );
+      return;
+    }
+
+    const payload = {
+      formType: "transport-enquiry",
+      name,
+      email,
+      phone,
+      serviceType,
+      pickupLocation: getFormValue(formData, "pickupLocation"),
+      dropoffLocation: getFormValue(formData, "dropoffLocation"),
+      preferredDate: getFormValue(formData, "preferredDate"),
+      preferredTime: getFormValue(formData, "preferredTime"),
+      numberOfPassengers: Number(
+        getFormValue(formData, "numberOfPassengers") || 1,
+      ),
+      message,
+    };
 
     setStatus("submitting");
     setStatusMessage("Sending your transport request...");
 
     try {
-      const response = await fetch("/api/booking", {
+      const response = await fetch(CONTACT_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const result = (await response.json().catch(() => ({}))) as {
-        ok?: boolean;
+        success?: boolean;
         error?: string;
       };
 
-      if (!response.ok || !result.ok) {
+      if (!response.ok || result.success !== true) {
         throw new Error(result.error || "Your request could not be sent.");
       }
 
       form.reset();
       setStatus("success");
       setStatusMessage(
-        "Your request has been sent. The Mtseku team will contact you about availability.",
+        "Thank you. Your request has been received. Mtseku Transport Services will contact you shortly.",
       );
     } catch (error) {
       setStatus("error");
@@ -119,7 +196,11 @@ const Booking = () => {
               <ShieldCheck aria-hidden="true" />
             </div>
 
-            <form className="booking-form" onSubmit={handleSubmit}>
+            <form
+              className="booking-form"
+              onSubmit={handleSubmit}
+              aria-busy={status === "submitting"}
+            >
               <label className="form-honeypot" aria-hidden="true">
                 <span>Company website</span>
                 <input
@@ -142,28 +223,26 @@ const Booking = () => {
                 />
               </label>
               <label>
-                <span>Email address *</span>
+                <span>Email address</span>
                 <input
                   type="email"
                   name="email"
                   autoComplete="email"
-                  required
                   placeholder="you@example.com"
                 />
               </label>
               <label>
-                <span>Phone number *</span>
+                <span>Phone number</span>
                 <input
                   type="tel"
                   name="phone"
                   autoComplete="tel"
-                  required
                   placeholder="+27"
                 />
               </label>
               <label>
                 <span>Number of passengers</span>
-                <select name="passengers" defaultValue="1">
+                <select name="numberOfPassengers" defaultValue="1">
                   {Array.from({ length: 20 }, (_, index) => index + 1).map(
                     (passengers) => (
                       <option key={passengers} value={passengers}>
@@ -181,38 +260,35 @@ const Booking = () => {
 
             <div className="form-grid form-grid-2">
               <label>
-                <span>Pickup location *</span>
+                <span>Pickup location</span>
                 <input
                   type="text"
                   name="pickupLocation"
-                  required
                   placeholder="Pickup address or area"
                 />
               </label>
               <label>
-                <span>Destination *</span>
+                <span>Drop-off location</span>
                 <input
                   type="text"
-                  name="destination"
-                  required
-                  placeholder="Destination address or area"
+                  name="dropoffLocation"
+                  placeholder="Drop-off address or area"
                 />
               </label>
             </div>
 
             <div className="form-grid form-grid-3">
               <label>
-                <span>Travel date *</span>
+                <span>Preferred date</span>
                 <input
                   type="date"
-                  name="date"
+                  name="preferredDate"
                   min={getLocalDate()}
-                  required
                 />
               </label>
               <label>
-                <span>Preferred time *</span>
-                <input type="time" name="time" required />
+                <span>Preferred time</span>
+                <input type="time" name="preferredTime" />
               </label>
               <label>
                 <span>Service type *</span>
@@ -230,11 +306,12 @@ const Booking = () => {
             </div>
 
             <label>
-              <span>Additional requirements</span>
+              <span>Message *</span>
               <textarea
                 name="message"
                 rows={4}
-                placeholder="Stops, luggage, accessibility needs or other trip details"
+                required
+                placeholder="Tell us about the route, passengers, luggage, stops or timing requirements"
               />
             </label>
 
