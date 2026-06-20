@@ -7,6 +7,7 @@ import scenicImage from "@/assets/gallery2.webp";
 import interiorImage from "@/assets/service2.webp";
 import privateHireImage from "@/assets/gallery.jpg";
 import luggageImage from "@/assets/gallery6.webp";
+import roadImage from "@/assets/service4.jpg";
 
 const galleryItems = [
   {
@@ -23,6 +24,14 @@ const galleryItems = [
     alt: "Mtseku airport transfer vehicles at a terminal",
     width: 1280,
     height: 960,
+    className: "",
+  },
+  {
+    image: roadImage,
+    title: "Long-distance route ready",
+    alt: "Silver Mtseku transport vehicle on an open South African road",
+    width: 1200,
+    height: 1600,
     className: "",
   },
   {

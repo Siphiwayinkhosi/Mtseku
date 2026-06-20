@@ -1,5 +1,5 @@
 import { ArrowDownRight, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 
 type PageHeroProps = {
   variant: "services" | "about" | "fleet" | "contact";
@@ -68,10 +68,10 @@ const PageHero = ({
             ))}
           </ul>
         )}
-        <Link className="button button-accent" to={nextHref}>
+        <HashLink className="button button-accent" to={nextHref}>
           {nextLabel}
           <ArrowRight aria-hidden="true" />
-        </Link>
+        </HashLink>
       </div>
 
       <div className="page-hero-index" aria-hidden="true">

@@ -1,5 +1,6 @@
 import { ArrowUpRight, Building2, CalendarCheck, Route } from "lucide-react";
 import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 import Reveal from "@/components/Reveal";
 
 const pathways = [
@@ -58,10 +59,17 @@ const HomePathways = () => (
             </div>
             <h3>{pathway.title}</h3>
             <p>{pathway.text}</p>
-            <Link to={pathway.href}>
-              {pathway.label}
-              <ArrowUpRight aria-hidden="true" />
-            </Link>
+            {pathway.href.includes("#") ? (
+              <HashLink to={pathway.href}>
+                {pathway.label}
+                <ArrowUpRight aria-hidden="true" />
+              </HashLink>
+            ) : (
+              <Link to={pathway.href}>
+                {pathway.label}
+                <ArrowUpRight aria-hidden="true" />
+              </Link>
+            )}
           </Reveal>
         ))}
       </div>

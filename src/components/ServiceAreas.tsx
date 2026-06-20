@@ -1,5 +1,5 @@
 import { ArrowRight, Building2, MapPin, Navigation } from "lucide-react";
-import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 import Reveal from "@/components/Reveal";
 import { BUSINESS } from "@/lib/site";
 
@@ -70,10 +70,10 @@ const ServiceAreas = () => (
             </div>
             <h3>{area.city}</h3>
             <p>{area.detail}</p>
-            <Link to="/contact#booking">
+            <HashLink to="/contact#booking">
               Request transport
               <ArrowRight aria-hidden="true" />
-            </Link>
+            </HashLink>
           </Reveal>
         ))}
       </div>

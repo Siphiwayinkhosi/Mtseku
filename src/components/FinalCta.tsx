@@ -1,5 +1,5 @@
 import { ArrowRight, MessageCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 import Reveal from "@/components/Reveal";
 import { whatsappBookingUrl } from "@/lib/site";
 
@@ -23,10 +23,10 @@ const FinalCta = ({
           <p>{description}</p>
         </div>
         <div className="final-cta-actions">
-          <Link className="button button-light" to="/contact#booking">
+          <HashLink className="button button-light" to="/contact#booking">
             Request transport
             <ArrowRight aria-hidden="true" />
-          </Link>
+          </HashLink>
           <a
             className="button button-outline-light"
             href={whatsappBookingUrl}

@@ -3647,8 +3647,8 @@ h2 {
 
   .brand-wordmark small {
     margin-top: 4px;
-    font-size: 0.45rem;
-    letter-spacing: 0.14em;
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
   }
 
   .hero-layout {
@@ -4047,10 +4047,6 @@ h2 {
 }
 
 @media (max-width: 420px) {
-  .brand-wordmark small {
-    display: none;
-  }
-
   .hero-trust {
     grid-template-columns: 1fr;
   }

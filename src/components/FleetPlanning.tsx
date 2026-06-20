@@ -5,7 +5,7 @@ import {
   MapPinned,
   UsersRound,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 import Reveal from "@/components/Reveal";
 
 const planningDetails = [
@@ -42,10 +42,10 @@ const FleetPlanning = () => (
           the practical requirements and the team can assess the appropriate
           transport arrangement.
         </p>
-        <Link className="button button-accent" to="/contact#booking">
+        <HashLink className="button button-accent" to="/contact#booking">
           Share your requirements
           <ArrowRight aria-hidden="true" />
-        </Link>
+        </HashLink>
       </Reveal>
 
       <div className="fleet-planning-grid">

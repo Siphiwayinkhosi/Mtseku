@@ -1,5 +1,6 @@
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 import { BUSINESS, NAV_ITEMS, whatsappBookingUrl } from "@/lib/site";
 
 const Footer = () => (
@@ -61,11 +62,11 @@ const Footer = () => (
 
         <div className="footer-column">
           <h2>Services</h2>
-          <Link to="/services#services">Shuttle services</Link>
-          <Link to="/services#services">Tours &amp; sightseeing</Link>
-          <Link to="/services#services">Private hire</Link>
-          <Link to="/services#services">Contract transport</Link>
-          <Link to="/services#services">Airport transfers</Link>
+          <HashLink to="/services#services">Shuttle services</HashLink>
+          <HashLink to="/services#services">Tours &amp; sightseeing</HashLink>
+          <HashLink to="/services#services">Private hire</HashLink>
+          <HashLink to="/services#services">Contract transport</HashLink>
+          <HashLink to="/services#services">Airport transfers</HashLink>
         </div>
 
         <div className="footer-column footer-contact">

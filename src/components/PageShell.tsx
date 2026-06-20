@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { useParallax } from "@/hooks/use-parallax";
+import { scrollToHash } from "@/lib/hash-scroll";
 import { SEO_PAGES } from "@/lib/seo-pages.mjs";
 
 type PageShellProps = {
@@ -21,9 +22,7 @@ const PageShell = ({ children, path }: PageShellProps) => {
   useEffect(() => {
     if (location.hash) {
       const timer = window.setTimeout(() => {
-        document
-          .querySelector(location.hash)
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollToHash(location.hash);
       }, 50);
 
       return () => window.clearTimeout(timer);

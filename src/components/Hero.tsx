@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   UserRoundCheck,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import HashLink from "@/components/HashLink";
 import heroImage from "@/assets/hero.webp";
 import { BUSINESS, whatsappBookingUrl } from "@/lib/site";
 
@@ -56,10 +56,10 @@ const Hero = () => {
               <MessageCircle aria-hidden="true" />
               Book on WhatsApp
             </a>
-            <Link className="button button-ghost" to="/contact#booking">
+            <HashLink className="button button-ghost" to="/contact#booking">
               Request transport
               <ArrowRight aria-hidden="true" />
-            </Link>
+            </HashLink>
             <a
               className="hero-call"
               href={BUSINESS.phoneHref}
@@ -115,21 +115,21 @@ const Hero = () => {
             Tell us where, when and how many passengers. We will help plan the
             right transport solution.
           </p>
-          <Link to="/contact#booking">
+          <HashLink to="/contact#booking">
             Start a booking request
             <ArrowRight aria-hidden="true" />
-          </Link>
+          </HashLink>
         </aside>
       </div>
 
-      <a
+      <HashLink
         className="hero-scroll"
-        href="#start-here"
+        to="/#start-here"
         aria-label="Scroll to the website guide"
       >
         <span aria-hidden="true" />
         Choose your path
-      </a>
+      </HashLink>
     </section>
   );
 };
