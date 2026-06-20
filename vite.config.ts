@@ -6,6 +6,22 @@ export default defineConfig({
   server: {
     host: "::",
     port: 8080,
+    watch: {
+      usePolling: true,
+      interval: 300,
+      ignored: [
+        "**/.agents/**",
+        "**/.codex/**",
+        "**/.cursor/**",
+        "**/.github/**",
+        "**/.jetro/**",
+        "**/.qodo/**",
+        "**/.git/**",
+        "**/data/**",
+        "**/dist/**",
+        "**/projects/**",
+      ],
+    },
   },
   plugins: [react()],
   resolve: {
