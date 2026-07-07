@@ -1,6 +1,6 @@
-export const DEFAULT_SITE_URL = "https://mtseku.vercel.app";
+export const DEFAULT_SITE_URL = "https://www.mtsekutransport.co.za";
 export const DEFAULT_SOCIAL_IMAGE = "/og-mtseku.jpg";
-export const LAST_MODIFIED = "2026-06-13";
+export const LAST_MODIFIED = "2026-07-07";
 
 export const SEO_PAGES = {
   "/": {

@@ -1,6 +1,6 @@
 export const SITE_URL =
   import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ||
-  "https://mtseku.vercel.app";
+  "https://www.mtsekutransport.co.za";
 
 export const BUSINESS = {
   name: "Mtseku Transport Services",
@@ -8,8 +8,8 @@ export const BUSINESS = {
   phoneDisplay: "+27 78 868 6706",
   phoneHref: "tel:+27788686706",
   whatsapp: "https://wa.me/27788686706",
-  email: "info@mstekutransport.co.za",
-  emailHref: "mailto:info@mstekutransport.co.za",
+  email: "info@mtsekutransport.co.za",
+  emailHref: "mailto:info@mtsekutransport.co.za",
   addresses: [
     {
       city: "Johannesburg",

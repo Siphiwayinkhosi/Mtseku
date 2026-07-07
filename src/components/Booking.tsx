@@ -131,9 +131,6 @@ const Booking = () => {
       honeypot: "",
     };
 
-    console.log("[Mtseku booking] API URL configured:", Boolean(CONTACT_API_URL));
-    console.log("[Mtseku booking] Payload being sent:", payload);
-
     if (!CONTACT_API_URL) {
       setStatus("error");
       setStatusMessage(
@@ -159,12 +156,6 @@ const Booking = () => {
       } catch {
         result = {};
       }
-
-      console.log("[Mtseku booking] API response status:", response.status);
-      console.log(
-        "[Mtseku booking] API response body:",
-        responseText ? result : "",
-      );
 
       if (!response.ok || result.success !== true) {
         throw new Error(

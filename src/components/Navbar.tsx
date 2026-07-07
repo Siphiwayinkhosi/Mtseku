@@ -34,18 +34,18 @@ const Navbar = () => {
           <span className="brand-mark">
             <img
               className="brand-mark-light"
-              src="/mtseku-mark-light.png"
+              src="/logo-mark-light.png"
               alt=""
-              width="984"
-              height="376"
+              width="680"
+              height="542"
               aria-hidden="true"
             />
             <img
               className="brand-mark-color"
-              src="/mtseku-mark-color.png"
+              src="/logo-mark-color.png"
               alt=""
-              width="984"
-              height="376"
+              width="680"
+              height="542"
               aria-hidden="true"
             />
           </span>

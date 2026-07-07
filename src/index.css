@@ -366,8 +366,8 @@ h2 {
 .brand-mark {
   position: relative;
   display: block;
-  width: 82px;
-  height: 42px;
+  width: 58px;
+  height: 48px;
   flex: 0 0 auto;
 }
 
@@ -3021,8 +3021,8 @@ h2 {
 }
 
 .footer-brand-lockup .brand-mark {
-  width: 90px;
-  height: 45px;
+  width: 62px;
+  height: 52px;
 }
 
 .footer-brand > p {
@@ -3641,8 +3641,8 @@ h2 {
   }
 
   .brand-mark {
-    width: 63px;
-    height: 34px;
+    width: 54px;
+    height: 45px;
   }
 
   .brand-wordmark strong {
@@ -3807,6 +3807,15 @@ h2 {
 
   .page-hero--contact .page-hero-copy {
     max-width: 100%;
+  }
+
+  .page-hero--contact .page-hero-copy h1 {
+    font-size: clamp(2.75rem, 12vw, 3.7rem);
+    overflow-wrap: normal;
+  }
+
+  .page-hero--contact .page-hero-copy h1 span {
+    max-width: 8.5ch;
   }
 
   .page-hero--contact .page-hero-overlay {

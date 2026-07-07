@@ -11,10 +11,10 @@ const Footer = () => (
           <Link className="brand footer-brand-lockup" to="/" aria-label={`${BUSINESS.name} home`}>
             <span className="brand-mark">
               <img
-                src="/mtseku-mark-light.png"
+                src="/logo-mark-light.png"
                 alt=""
-                width="984"
-                height="376"
+                width="680"
+                height="542"
                 loading="lazy"
                 aria-hidden="true"
               />
