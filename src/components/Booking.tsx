@@ -8,20 +8,13 @@ import {
   ShieldCheck,
   UserRoundCheck,
 } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import Reveal from "@/components/Reveal";
+import { useBookingChallenge } from "@/hooks/use-booking-challenge";
+import serviceOptions from "@/lib/booking-services.json";
 import { BUSINESS, whatsappBookingUrl } from "@/lib/site";
 
-const CONTACT_API_URL = import.meta.env.VITE_CONTACT_API_URL?.trim();
-
-const serviceOptions = [
-  "Shuttle Services",
-  "Tours & Sightseeing",
-  "Private Hire",
-  "Contract Transport",
-  "Airport Transfer",
-  "Custom Solution",
-] as const;
+const contactApiUrl = "/api/booking";
 
 const bookingBenefits = [
   {
@@ -68,9 +61,12 @@ type ContactApiResponse = {
 const Booking = () => {
   const [status, setStatus] = useState<SubmissionStatus>("idle");
   const [statusMessage, setStatusMessage] = useState("");
+  const submitting = useRef(false);
+  const challenge = useBookingChallenge(contactApiUrl);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (submitting.current) return;
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -128,22 +124,29 @@ const Booking = () => {
       preferredDateTime,
       passengers: getFormValue(formData, "passengers") || "1",
       message,
-      honeypot: "",
+      honeypot: getFormValue(formData, "honeypot"),
+      turnstileToken: challenge.token,
     };
 
-    if (!CONTACT_API_URL) {
+    if (!challenge.available) {
       setStatus("error");
       setStatusMessage(
         "Online enquiries are temporarily unavailable. Please use WhatsApp or call Mtseku Transport Services.",
       );
       return;
     }
+    if (!challenge.token) {
+      setStatus("error");
+      setStatusMessage("Please complete the verification and try again.");
+      return;
+    }
 
+    submitting.current = true;
     setStatus("submitting");
     setStatusMessage("Sending your transport request...");
 
     try {
-      const response = await fetch(CONTACT_API_URL, {
+      const response = await fetch(contactApiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -166,7 +169,7 @@ const Booking = () => {
       form.reset();
       setStatus("success");
       setStatusMessage(
-        "Thank you. Your request has been received. Mtseku Transport Services will contact you shortly.",
+        "Thank you. Mtseku’s mail server accepted your request. The team will contact you shortly.",
       );
     } catch (error) {
       setStatus("error");
@@ -175,6 +178,9 @@ const Booking = () => {
           ? error.message
           : "Your request could not be sent. Please try again.",
       );
+    } finally {
+      submitting.current = false;
+      challenge.reset();
     }
   };
 
@@ -213,8 +219,7 @@ const Booking = () => {
                   name="honeypot"
                   tabIndex={-1}
                   autoComplete="off"
-                  value=""
-                  readOnly
+                  defaultValue=""
                 />
               </label>
 
@@ -321,6 +326,8 @@ const Booking = () => {
                 placeholder="Tell us about the route, passengers, luggage, stops or timing requirements"
               />
             </label>
+
+            <div ref={challenge.container} />
 
             <div className="booking-actions">
               <button

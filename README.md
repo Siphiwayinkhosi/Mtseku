@@ -9,41 +9,23 @@ npm ci
 npm run dev
 ```
 
-## Contact form API setup
+## Booking form setup
 
-`VITE_CONTACT_API_URL` is a public, build-time Vite variable. Leave it unset in
-Cloudflare Workers Builds until the replacement booking endpoint is ready. The
-form then directs visitors to WhatsApp or phone when they try to submit online.
+The contact page posts to the same-origin `POST /api/booking` Worker endpoint.
+Configure the following **runtime** variables on the production `mtseku` Worker.
 
-API contract:
+| Name | Type | Value |
+| --- | --- | --- |
+| `SMTP_PASS` | Secret | Hostinger SMTP password for `info@mtsekutransport.co.za` |
+| `TURNSTILE_SECRET_KEY` | Secret | Secret for the Turnstile widget restricted to `www.mtsekutransport.co.za` |
+| `TURNSTILE_SITE_KEY` | Text | Public site key for the same widget |
+| `SMTP_PORT` | Text, optional | `465` for implicit TLS (default), or `587` for required STARTTLS |
 
-```http
-POST {VITE_CONTACT_API_URL}
-Content-Type: application/json
-```
-
-Request body:
-
-```json
-{
-  "name": "Customer name",
-  "email": "customer@example.com",
-  "phone": "+27...",
-  "serviceType": "Airport Transfer",
-  "pickupLocation": "Pickup address or area",
-  "dropoffLocation": "Drop-off address or area",
-  "preferredDateTime": "2026-06-20 10:30",
-  "passengers": "2",
-  "message": "Transport enquiry details",
-  "honeypot": ""
-}
-```
-
-Expected success response:
-
-```json
-{ "success": true }
-```
+Use a Managed widget and allow only `www.mtsekutransport.co.za`. The form directs
+visitors to WhatsApp or phone while a required value is missing. Hostinger sends
+to the fixed business mailbox and the Worker acknowledges the request after
+Hostinger accepts it over SMTP. Check the inbox to confirm end-to-end delivery
+when setting up or changing SMTP credentials.
 
 ## Production
 
