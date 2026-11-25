@@ -16,7 +16,7 @@ Configure the following **runtime** variables on the production `mtseku` Worker.
 
 | Name | Type | Value |
 | --- | --- | --- |
-| `SMTP_PASS` | Secret | Hostinger SMTP password for `info@mtsekutransport.co.za` |
+| `SMTP_PASS` | Secret | Dedicated Hostinger app password for `info@mtsekutransport.co.za` |
 | `TURNSTILE_SECRET_KEY` | Secret | Secret for the Turnstile widget restricted to `www.mtsekutransport.co.za` |
 | `TURNSTILE_SITE_KEY` | Text | Public site key for the same widget |
 | `SMTP_PORT` | Text, optional | `465` for implicit TLS (default), or `587` for required STARTTLS |
