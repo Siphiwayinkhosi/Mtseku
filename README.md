@@ -5,27 +5,15 @@ Multi-page React and Vite website for Mtseku Transport Services.
 ## Local development
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-The booking/contact form is frontend-only and posts to a configurable API
-endpoint. This project is prepared for an AWS API Gateway/Lambda endpoint, but
-does not include the Lambda backend yet.
-
 ## Contact form API setup
 
-Set the public Vite environment variable:
-
-```text
-VITE_CONTACT_API_URL=https://your-aws-api-gateway-url.example/contact
-```
-
-For the current AWS API Gateway endpoint:
-
-```text
-VITE_CONTACT_API_URL=https://mq2379zr3l.execute-api.af-south-1.amazonaws.com/default/mtseku-contact-form
-```
+`VITE_CONTACT_API_URL` is a public, build-time Vite variable. Leave it unset in
+Cloudflare Workers Builds until the replacement booking endpoint is ready. The
+form then directs visitors to WhatsApp or phone when they try to submit online.
 
 API contract:
 
@@ -57,15 +45,18 @@ Expected success response:
 { "success": true }
 ```
 
-If `VITE_CONTACT_API_URL` is missing, the form shows a clear user-facing error
-and does not submit.
-
 ## Production
 
 ```sh
+npm ci
+npm run lint
 npm run build
 ```
 
-The build also generates route-specific HTML metadata, `sitemap.xml`, and
-`robots.txt`. Pushes to the production branch deploy automatically when the
-GitHub repository is connected to Vercel.
+Cloudflare Workers Builds deploys the `main` branch to the `mtseku` Worker using
+`npm run build` and `npx wrangler deploy --name mtseku --assets ./dist`. The npm
+lockfile determines dependency installation. `wrangler.jsonc` serves the static
+files in `dist` with extensionless page URLs and a custom 404 page.
+
+The build generates route-specific HTML metadata, `sitemap.xml`, and
+`robots.txt` for `https://www.mtsekutransport.co.za`.
