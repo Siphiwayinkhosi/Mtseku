@@ -1,12 +1,11 @@
 import { DurableObject } from "cloudflare:workers";
-import nodemailer from "nodemailer";
 import { z } from "zod";
 import serviceOptions from "../src/lib/booking-services.json";
 import { buildEmail } from "./booking-email.js";
 
 const site = "https://www.mtsekutransport.co.za";
 const mailbox = "info@mtsekutransport.co.za";
-const smtpHost = "smtp.hostinger.com";
+const sender = "notifications@bookings.mtsekutransport.co.za";
 const duplicateWindow = 15 * 60 * 1000;
 const maxBodyBytes = 16 * 1024;
 const requestFailed = "Your request could not be sent. Please try again or contact us on WhatsApp.";
@@ -69,7 +68,7 @@ async function verifyChallenge(token, secret, ip) {
 
 export default {
   async fetch(request, env) {
-    const enabled = Boolean(env.SMTP_PASS && env.TURNSTILE_SECRET_KEY && env.TURNSTILE_SITE_KEY);
+    const enabled = Boolean(env.BOOKING_EMAIL && env.TURNSTILE_SECRET_KEY && env.TURNSTILE_SITE_KEY);
     if (request.method === "GET") {
       return json({ siteKey: enabled ? env.TURNSTILE_SITE_KEY : null });
     }
@@ -115,40 +114,23 @@ export class BookingDelivery extends DurableObject {
     if (previous === "accepted") return accepted();
     if (previous) return failure(409, "We couldn’t confirm this request. Please contact Mtseku on WhatsApp before trying again.");
 
-    const port = this.env.SMTP_PORT === "587" ? 587 : 465;
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port,
-      secure: port === 465,
-      requireTLS: port === 587,
-      auth: { user: mailbox, pass: this.env.SMTP_PASS },
-      connectionTimeout: 8000,
-      greetingTimeout: 8000,
-      socketTimeout: 12000,
-    });
-
-    let delivery;
+    let messageId;
     try {
-      delivery = await transporter.sendMail({
-        from: { name: "Mtseku Transport Services", address: mailbox },
+      ({ messageId } = await this.env.BOOKING_EMAIL.send({
+        from: { name: "Mtseku Transport Services", email: sender },
         to: mailbox,
-        replyTo: submission.email ? { address: submission.email } : undefined,
+        replyTo: submission.email || undefined,
         ...buildEmail(submission),
-      });
+      }));
     } catch (error) {
-      // A socket error after DATA was sent can arrive without an SMTP response.
-      // Keep the reservation when the server's decision is unknown.
-      if (error.responseCode >= 400 || ["EAUTH", "EDNS", "ETLS", "EENVELOPE"].includes(error.code)) {
+      // Keep the reservation if the service could have accepted the message.
+      if (error instanceof TypeError || (error.code?.startsWith("E_") && error.code !== "E_INTERNAL_SERVER_ERROR")) {
         await this.ctx.storage.delete("status");
       }
-      console.error("Hostinger booking SMTP failure", { code: error.code, command: error.command, responseCode: error.responseCode });
-      return failure(502);
-    } finally {
-      transporter.close();
-    }
-    if (!delivery.accepted.includes(mailbox) || !/^250\b/.test(delivery.response)) {
+      console.error("Booking email send failed", { code: error.code });
       return failure(502);
     }
+    if (!messageId) return failure(502);
     await this.ctx.storage.put("status", "accepted");
     return accepted();
   }

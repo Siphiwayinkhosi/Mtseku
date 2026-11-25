@@ -169,7 +169,7 @@ const Booking = () => {
       form.reset();
       setStatus("success");
       setStatusMessage(
-        "Thank you. Mtseku’s mail server accepted your request. The team will contact you shortly.",
+        "Thank you. Your booking request has been sent. The team will contact you shortly.",
       );
     } catch (error) {
       setStatus("error");

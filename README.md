@@ -16,16 +16,18 @@ Configure the following **runtime** variables on the production `mtseku` Worker.
 
 | Name | Type | Value |
 | --- | --- | --- |
-| `SMTP_PASS` | Secret | Dedicated Hostinger app password for `info@mtsekutransport.co.za` |
 | `TURNSTILE_SECRET_KEY` | Secret | Secret for the Turnstile widget restricted to `www.mtsekutransport.co.za` |
 | `TURNSTILE_SITE_KEY` | Text | Public site key for the same widget |
-| `SMTP_PORT` | Text, optional | `465` for implicit TLS (default), or `587` for required STARTTLS |
 
-Use a Managed widget and allow only `www.mtsekutransport.co.za`. The form directs
-visitors to WhatsApp or phone while a required value is missing. Hostinger sends
-to the fixed business mailbox and the Worker acknowledges the request after
-Hostinger accepts it over SMTP. Check the inbox to confirm end-to-end delivery
-when setting up or changing SMTP credentials.
+Use a Managed widget that allows only `www.mtsekutransport.co.za`. The form
+directs visitors to WhatsApp or phone while a required value is missing.
+
+Cloudflare Email Sending authenticates `bookings.mtsekutransport.co.za` as a
+separate sending domain. The `BOOKING_EMAIL` binding sends from
+`notifications@bookings.mtsekutransport.co.za` to the single verified recipient
+`info@mtsekutransport.co.za`, whose inbox stays at Hostinger. The customer’s
+address is used as Reply-To. Check the Cloudflare delivery activity and the
+Hostinger inbox when verifying a deployment.
 
 ## Production
 

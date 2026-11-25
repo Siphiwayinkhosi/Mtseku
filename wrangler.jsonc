@@ -1,7 +1,6 @@
 {
   "name": "mtseku",
   "compatibility_date": "2026-11-25",
-  "compatibility_flags": ["nodejs_compat"],
   "main": "worker/index.js",
   "keep_vars": true,
   "assets": {
@@ -17,6 +16,11 @@
       "simple": { "limit": 6, "period": 60 }
     }
   ],
+  "send_email": [{
+    "name": "BOOKING_EMAIL",
+    "destination_address": "info@mtsekutransport.co.za",
+    "allowed_sender_addresses": ["notifications@bookings.mtsekutransport.co.za"]
+  }],
   "durable_objects": {
     "bindings": [{ "name": "BOOKING_DELIVERY", "class_name": "BookingDelivery" }]
   },
